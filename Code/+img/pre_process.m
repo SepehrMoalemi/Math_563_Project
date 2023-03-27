@@ -1,0 +1,36 @@
+%% Purpose: Do Preprocessing
+% Convert the Image to Black and White
+% Resize  the Image so that each pixel is between 0 and 1
+% Display the resulting Image
+function I = pre_process(I, grayscale, resize, show)
+    arguments
+        I         uint8 
+        grayscale logical = true
+        resize    logical = true
+        show      logical = true
+    end
+    
+    %% Convert the Image to Black and White
+    if grayscale
+        I = rgb2gray(I);
+    end
+
+    %% Resize the Image so each pixel is [0,1]
+    if resize
+        I = double(I(:,:,1));
+        I_min = min(I(:));
+        I = I - I_min;
+        I_max = max(I(:));
+        I = I/I_max;
+    end
+    
+    %% Display the Resulting Image
+    if show
+        figure('Name','Image before Deblurring')
+        hIm = imshow(I,[]);
+        title_txt = sprintf("[%d x %d]", hIm.XData(2), hIm.YData(2));
+        title(title_txt)
+        ax = gca;
+        ax.TitleFontSizeMultiplier = 2;
+    end
+end
