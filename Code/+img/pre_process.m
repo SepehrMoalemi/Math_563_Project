@@ -4,7 +4,7 @@
 % Display the resulting Image
 function I = pre_process(I, grayscale, resize, show)
     arguments
-        I         uint8 
+        I         uint8
         grayscale logical = true
         resize    logical = true
         show      logical = true
@@ -26,11 +26,6 @@ function I = pre_process(I, grayscale, resize, show)
     
     %% Display the Resulting Image
     if show
-        figure('Name','Image before Deblurring')
-        hIm = imshow(I,[]);
-        title_txt = sprintf("[%d x %d]", hIm.XData(2), hIm.YData(2));
-        title(title_txt)
-        ax = gca;
-        ax.TitleFontSizeMultiplier = 2;
+        img.display(I, 'Image before Deblurring')
     end
 end

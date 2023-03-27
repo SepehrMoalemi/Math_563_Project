@@ -1,7 +1,7 @@
 %% Purpose: Blur Image using MATLAB fspecial
-function b = blur(I, type)
+function b = blur(I, type, show)
     arguments 
-        I double
+        I    double
         type string {mustBeMember(type, ...
                                     {'average', ...
                                      'disk', ...
@@ -9,6 +9,7 @@ function b = blur(I, type)
                                      'log' ...
                                      'laplacian' ...
                                      'motion'})}
+        show logical = true
     end
     %{
        %% fspecial options 
@@ -24,5 +25,11 @@ function b = blur(I, type)
     % Get Defaul Options based on type
     args = img.defaults.get_blurring_def(type);
     b = imfilter(I, fspecial(type, args{:}));
+
+    if show
+        fig_name = "Image after blurring";
+        title_msg = type + " blurring algorithm";
+        img.display(b, fig_name, title_msg)
+    end
 end
 

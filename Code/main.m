@@ -29,7 +29,7 @@ if test_img_prepr
     I = img.pre_process(I, to_grayscale, resize, show_preproc);
 
     % Blur Image
-    b = img.blur(I, "gaussian");
+    b = img.blur(I, "motion");
 end
 
 %% TODO
