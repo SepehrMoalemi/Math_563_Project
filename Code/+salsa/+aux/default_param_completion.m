@@ -1,5 +1,5 @@
 %% Purpose: Sets Missing Input Parameters to Default
-function i = set_input_param(i)
+function i = default_param_completion(i)
     arguments
         i struct
     end

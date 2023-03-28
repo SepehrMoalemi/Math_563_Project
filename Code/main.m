@@ -9,7 +9,7 @@ test_set_def_input = false;
 if test_set_def_input
     i.maxiter = 69;
     i.tcp = 12;
-    i = salsa.aux.set_input_param(i);
+    i = salsa.aux.default_param_completion(i);
 end
 
 %% Testing Image preprocessing
