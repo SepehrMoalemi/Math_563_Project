@@ -1,5 +1,5 @@
 %% Purpose: Blur Image using MATLAB fspecial
-function b = add_blur(I, type, padding, show)
+function [kernel, b] = add_blur(I, type, padding, show)
     arguments 
         I    double
         type string {mustBeMember(type, ...
@@ -50,7 +50,8 @@ function b = add_blur(I, type, padding, show)
     %% Perform 2-D filtering to blur
     % Get Defaul Options based on type
     args = img.defaults.get_blurring_def(type);
-    b = imfilter(I, fspecial(type, args{:}), padding);
+    kernel = fspecial(type, args{:});
+    b = imfilter(I, kernel, padding);
 
     %% Display Image
     if show

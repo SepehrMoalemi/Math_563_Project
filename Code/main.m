@@ -30,7 +30,7 @@ if test_img_prepr
     I = img.pre_process(I, to_grayscale, resize, show_preproc);
 
     % Blur Image
-    b = img.add_blur(I, "disk", "replicate");
+    [kernel, b] = img.add_blur(I, "disk", "circular");
 
     % Add Noise
     J = img.add_noise(b, "salt & pepper");
