@@ -26,6 +26,6 @@ function I = pre_process(I, grayscale, resize, show)
     
     %% Display the Resulting Image
     if show
-        img.display(I, 'Image after Preprocessing')
+        img.display(I, '')
     end
 end

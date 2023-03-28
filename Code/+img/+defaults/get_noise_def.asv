@@ -1,0 +1,35 @@
+%% Purpose: Get Default Args for MATLAB fspecial
+function args = get_noise_def(type)
+    arguments 
+        type string {mustBeMember(type, ...
+                                    {'gaussian', ...
+                                     'poisson', ...
+                                     'salt & pepper' ...
+                                     'speckle'})}
+    end
+    switch type
+        % J = imnoise(I,'gaussian',m,var_gauss)
+        case 'gaussian'
+            args = {[0, 0.01]};
+
+        % J = imnoise(I,'poisson')
+        case 'disk'
+            args = {};
+    
+        % J = imnoise(I,'salt & pepper',d)
+        case 'salt & pepper'
+            args = {0.05};
+    
+        % fspecial('laplacian',alpha)
+        case 'laplacian'
+            args = {0.2};
+    
+        % fspecial('log',hsize,sigma)
+        case 'log'
+            args = {[5, 5], 0.5};
+    
+        % fspecial('motion',len,theta)
+        case 'motion'
+            args = {9, 0};    
+    end
+end
