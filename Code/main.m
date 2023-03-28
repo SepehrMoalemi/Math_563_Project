@@ -13,14 +13,14 @@ if test_set_def_input
 end
 
 %% Testing Image preprocessing
-test_img_prepr = true;
+test_img_prepr = false;
 if test_img_prepr
     dir_name   = "./test_images/";
     file_names = ["mcgill.jpg", "cameraman.jpg", "manWithHat.tiff"];
     
     % Load Image
-    file_path = dir_name + file_names(1);
-    show_raw = false;
+    file_path = dir_name + file_names(2);
+    show_raw = true;
     I = img.load(file_path, show_raw);
     
     % Apply Preprocessing
@@ -30,11 +30,31 @@ if test_img_prepr
     I = img.pre_process(I, to_grayscale, resize, show_preproc);
 
     % Blur Image
-    [kernel, b] = img.add_blur(I, "disk", "circular");
+    [kernel, b] = img.add_blur(I, "motion", "circular");
 
     % Add Noise
     J = img.add_noise(b, "salt & pepper");
 end
+
+%% Testing boxProx
+test_box_prox = true;
+if test_box_prox
+    % random matrix size mxn in interval (a,b)
+    m = 5; n = 1;
+    a = -2; b = 4;
+    x = a + (b-a).*rand(m, n)
+
+    % Get boxProx 
+    l = 0; u = 1;
+    prox_x = salsa.aux.boxProx(x, l, u)
+    
+    % Find min sol using matlab
+    fun = @(y) norm(x - y);
+    lb = l*ones(m,n); ub = u*ones(m,n);
+    x_opt = fmincon(fun,x,[],[],[],[],lb,ub)
+
+end
+
 
 %% TODO
 %{
