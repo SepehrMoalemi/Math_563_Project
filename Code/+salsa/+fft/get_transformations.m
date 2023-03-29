@@ -1,5 +1,6 @@
-function [KD_proj, inv_KD_transf] = get_transformations(kernel, b, t)
+function [f_I_ATA, f_inv_I_ATA] = get_transformations(kernel, b, t)
     %% Constructing the K and D matrices
+    % A = [K; D]
     [m, n] = size(b);
     
     %% Compute Eignevalue Matrices of K, D1, D2
@@ -32,7 +33,7 @@ function [KD_proj, inv_KD_transf] = get_transformations(kernel, b, t)
 
     %% (I + K'K + D'D)x : R^(m x n)->R^(m x n)
     % Notes: (I + A'A) = (I + K'K + D'D)
-    KD_proj = @(x) x + f_K_T(f_K(x)) + f_D_T(f_D(x));
+    f_I_ATA = @(x) x + f_K_T(f_K(x)) + f_D_T(f_D(x));
     
     %% Eigenvalues of I + t*t(K'K + D'D); 
     eigValsMat = ones(m, n) + t*t*(eig_K_T .*eig_K   + ...
@@ -40,7 +41,7 @@ function [KD_proj, inv_KD_transf] = get_transformations(kernel, b, t)
                                    eig_D2_T.*eig_D2);
 
     %% (I + K'*K + D'*D)^(-1)*x : R^(m x n)->R^(m x n)
-    inv_KD_transf = @(x) ifft2(fft2(x)./eigValsMat); 
+    f_inv_I_ATA = @(x) ifft2(fft2(x)./eigValsMat); 
 end
 
 %% Helper Functions

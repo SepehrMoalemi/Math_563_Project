@@ -1,10 +1,10 @@
-%% Purpose: Prox of indicator l1-norm
+%% Purpose: Prox of l1-norm
 function x = l1Prox(x, lambda)
     arguments
         x
         lambda double {mustBePositive(lambda)} = 1
     end
-    %% Prox_lambda ||x||1 = sing(xi)(|xi| - lambda)_+
+    %% Prox_lambda ||x||1 = sign(xi)(|xi| - lambda)_+
     %{
                              { xi - lambda  for  xi  >  lambda
         Prox_lambda ||x||1 = { 0            for |xi| <= lambda

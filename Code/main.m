@@ -37,7 +37,7 @@ if test_img_prepr
 end
 
 %% Testing boxProx
-test_box_prox = true;
+test_box_prox = false;
 if test_box_prox
     % random matrix size mxn in interval (a,b)
     m = 5; n = 1;
@@ -75,6 +75,30 @@ if test_l1_prox
     prox = @(y) (1/2)*norm(x - y)^2 + lambda*f(y);
     x_opt = fmincon(prox,x);
     x_opt = reshape(x_opt, m, [])
+end
+
+%% Testing l2Prox
+test_l2_prox = true;
+if test_l2_prox
+    % random matrix size mxn in interval (a,b)
+    m = 5; n = 2;
+    a = -2; b = 4;
+    x = a + (b-a).*rand(m, n);
+    
+
+    % Get l1 prox
+    lambda = 2;
+    prox_x = salsa.aux.l2Prox(x, lambda)
+    
+    % Find min sol using matlab
+    x_opt = zeros(m,n);
+    f = @(x) norm(x,2);
+    for i=1:n
+        xi = x(:,i);
+        prox = @(y) (1/2)*norm(xi - y)^2 + lambda*f(y);
+        x_opt(:,i) = fmincon(prox,xi);
+    end
+    x_opt
 end
 
 
