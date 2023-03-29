@@ -6,12 +6,12 @@ function x = boxProx(x, l, u)
         u double {mustBeGreaterThanOrEqual(u,l)} = 1
     end
 
-    %% Get Out of Box Indices 
-    lower = x < l;
-    upper = x > u;
-
     %% Set Out of Box Indices to Border Values
-    x(lower) = l;
-    x(upper) = u;
+    % lower = x < l; x(lower) = l;
+    % upper = x > u; x(upper) = u;
+    prox = @(X) max(min(X, u), l);
+
+    %% Apply prox to vec/matrix x
+    x = salsa.aux.apply_prox(prox, x);
 end
 

@@ -1,0 +1,10 @@
+%% Purpose: Prox of indicator l1-norm
+function x = l1Prox(x, lambda)
+    arguments
+        x
+        lambda double {mustBePositive(lambda)} = 1
+    end
+    %% Prox_lambda ||x||1 = sing(xi)(|xi| - lambda)_+
+    x = max(x - lambda, 0) - max(-(x + lambda), 0)
+end
+

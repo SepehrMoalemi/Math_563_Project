@@ -49,10 +49,32 @@ if test_box_prox
     prox_x = salsa.aux.boxProx(x, l, u)
     
     % Find min sol using matlab
-    fun = @(y) norm(x - y);
+    x = x(:);
+    prox = @(y) norm(x - y);
     lb = l*ones(m,n); ub = u*ones(m,n);
-    x_opt = fmincon(fun,x,[],[],[],[],lb,ub)
+    x_opt = fmincon(prox,x,[],[],[],[],lb,ub);
+    x_opt = reshape(x_opt, m, [])
+end
 
+%% Testing l1Prox
+test_l1_prox = false;
+if test_l1_prox
+    % random matrix size mxn in interval (a,b)
+    m = 5; n = 4;
+    a = -2; b = 4;
+    x = a + (b-a).*rand(m, n);
+    
+
+    % Get l1 prox
+    lambda = 2;
+    prox_x = salsa.aux.l1Prox(x, lambda)
+    
+    % Find min sol using matlab
+    x = x(:);
+    f = @(x) norm(x,1);
+    prox = @(y) (1/2)*norm(x - y)^2 + lambda*f(y);
+    x_opt = fmincon(prox,x);
+    x_opt = reshape(x_opt, m, [])
 end
 
 

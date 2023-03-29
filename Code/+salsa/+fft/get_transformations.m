@@ -1,4 +1,4 @@
-function [KD_transf, inv_KD_transf] = get_transformations(kernel, b, t)
+function [KD_proj, inv_KD_transf] = get_transformations(kernel, b, t)
     %% Constructing the K and D matrices
     [m, n] = size(b);
     
@@ -18,27 +18,65 @@ function [KD_transf, inv_KD_transf] = get_transformations(kernel, b, t)
     f_K  = @(x) applyPeriodicConv2D(x, eig_K);
     f_D1 = @(x) applyPeriodicConv2D(x, eig_D1);
     f_D2 = @(x) applyPeriodicConv2D(x, eig_D2);
+
+    %% Dx : R^(m x n)->2 concat. R^(m x n)
+    f_D = @(x) cat(3, f_D1(x), f_D2(x));
     
-    %% K^Tx, D1^Tx, D2^Tx : R^(m x n)->R^(m x n)
+    %% K'x, D1'x, D2'x : R^(m x n)->R^(m x n)
     f_K_T  = @(x) applyPeriodicConv2D(x, eig_K_T);
     f_D1_T = @(x) applyPeriodicConv2D(x, eig_D1_T);
     f_D2_T = @(x) applyPeriodicConv2D(x, eig_D2_T);
-    
-    %% Dx : R^(m x n)->2 concat. R^(m x n)
-    f_D = @(x) cat(3, f_D1(x), f_D2(x));
 
-    %% D^Ty : 2 concat. R^(m x n)->R^(m x n)
-    applyDTrans = @(y) f_D1_T(y(:,:,1)) + f_D2_T(y(:, :, 2));
+    %% D'y : 2 concat. R^(m x n)->R^(m x n)
+    f_D_T = @(y) f_D1_T(y(:,:,1)) + f_D2_T(y(:, :, 2));
 
-    %% (I + K^TK + D^TD)x : R^(m x n)->R^(m x n)
-    KD_transf = @(x) x + f_K_T(f_K(x)) + applyDTrans(f_D(x));
+    %% (I + K'K + D'D)x : R^(m x n)->R^(m x n)
+    % Notes: (I + A'A) = (I + K'K + D'D)
+    KD_proj = @(x) x + f_K_T(f_K(x)) + f_D_T(f_D(x));
     
-    %% Eigenvalues of I + t*t*K^TK + t*t*D^TD; 
-    eigValsMat = ones(m, n) + t*t*(eig_K_T.*eig_K   + ...
+    %% Eigenvalues of I + t*t(K'K + D'D); 
+    eigValsMat = ones(m, n) + t*t*(eig_K_T .*eig_K   + ...
                                    eig_D1_T.*eig_D1 + ...
                                    eig_D2_T.*eig_D2);
 
-    %% (I + K^T*K + D^T*D)^(-1)*x : R^(m x n)->R^(m x n)
+    %% (I + K'*K + D'*D)^(-1)*x : R^(m x n)->R^(m x n)
     inv_KD_transf = @(x) ifft2(fft2(x)./eigValsMat); 
 end
 
+%% Helper Functions
+function out = applyPeriodicConv2D(x, eigValArr)
+    %DESCRIPTION: For a given "unblurred" image x and the eigenvalue array for
+    %the blurring kernel, computes the "blurred image" (e.g. Kx and Dx in the paper)
+    %   INPUT:  x           = m x n matrix representing the image
+    %           eigValArry  = m x n representing the eigenvalues of the 2D DFT
+    %                         of the convolution kernel
+    %   OUTPUT: out         = m x n the "blurred" image (i.e. Kx)
+    %
+    %MATH: Observe that K = Q^H eigValArry Q where Q is essentially the
+    %discrete fourier transform and Q^H is the inverse fourier transform. This
+    %perform Kx which reduces to this ifft(eigValArry.*fft(x)).
+    out = ifft2(eigValArr.*fft2(x));
+end
+
+function eigValArry = eigValsForPeriodicConvOp(kernel, numRows, numCols)
+    %DESCRIPTION: Computes the eigenvalues of the 2D DFT of the convolution kernel;
+    %(Note this is an array of eigenvalues because numCols can be larger than).
+    %
+    %   INPUT:      kernel  = correlation kernel (e.g. fspecial('gaussian'))
+    %               numRows = scalar; # of rows in the blurred image (b)
+    %               numCols = scalar; # of columns in the blurred image (b)
+    %   OUTPUT:     eigValArry = numRows x numCol matrix containing the
+    %                           eigenvalues of the convolution kernel
+    
+    % Constructing the impulse: customary to put this in the upper left hand
+    % corner pixel
+    a = zeros(numRows, numCols);
+    a(1,1) = 1;
+    
+    %Impulse Response from the given kernel
+    % 'circular' for periodic boundary conditions
+    Ra = imfilter(a, kernel, 'circular');
+    
+    %Fourier transform of the impulse response
+    eigValArry = fft2(Ra);
+end
