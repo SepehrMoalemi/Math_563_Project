@@ -7,7 +7,7 @@ function x = douglasrachfordprimaldual(prox_g, x, b, i)
     pk = x;
     qk = f_A(x);
     
-    while true
+    for i = 1:max_iter
         xk = salsa.aux.prox_f(pk, t);
         zk = salsa.aux.conjProx(prox_g(qk, t));
         a = 2*xk - pk;
@@ -17,5 +17,7 @@ function x = douglasrachfordprimaldual(prox_g, x, b, i)
         pk = pk + rho*(wk -xk);
         qk = qk + rho*(vk - zk);
     end
+    
+    x = salsa.aux.prox_f(pk, t);
 end
 
