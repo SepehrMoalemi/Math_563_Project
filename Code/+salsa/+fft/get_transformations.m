@@ -1,4 +1,10 @@
 function [f_A, f_A_T, f_I_ATA, f_inv_I_ATA] = get_transformations(kernel, b, t)
+    arguments
+        kernel
+        b
+        t double {mustBePositive(t)} = 1 %% This should be 1 in all algorithms but algo 2
+    end
+
     %% Constructing the K and D matrices
     % A = [K; D]
     [m, n] = size(b);
@@ -46,7 +52,7 @@ function [f_A, f_A_T, f_I_ATA, f_inv_I_ATA] = get_transformations(kernel, b, t)
                                    eig_D1_T.*eig_D1 + ...
                                    eig_D2_T.*eig_D2);
 
-    %% (I + K'*K + D'*D)^(-1)*x : R^(m x n)->R^(m x n)
+    %% (I + t^2*K'*K + D'*D)^(-1)*x : R^(m x n)->R^(m x n)
     f_inv_I_ATA = @(x) ifft2(fft2(x)./eigValsMat); 
 end
 

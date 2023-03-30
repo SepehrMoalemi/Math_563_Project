@@ -1,5 +1,5 @@
 %% Purpose: Chambolle-Pock Method
-function x = chambollepock(x, b, t, s)
+function x = chambollepock(prox_g, x, b, i)
 %{
     solves the generic convex optimization problem:
             min f(x) + g(y)
@@ -12,6 +12,8 @@ function x = chambollepock(x, b, t, s)
     Where A = [K D]'
     convergence is garunteed for s*t*(||A||^2) < 1
 %}
+
+    [f_A, f_A_T, f_I_ATA, f_inv_I_ATA] = salsa.fft.get_transformations(kernel, b)
 
 end
 
