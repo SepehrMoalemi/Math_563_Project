@@ -9,6 +9,11 @@ function x = salsa(problem, algorithm, x, kernel, b, i)
                                              'douglasrachfordprimaldual', ...
                                              'admm', ...
                                              'chambollepock'})}
+
+        x      double
+        kernel double
+        b      double
+        i      struct = salsa.defaults.get_input_param_def()
     end
     %{ 
         x_final = salsa('problem', 'algorithm', x_initial, kernel, b, i)
@@ -42,5 +47,12 @@ function x = salsa(problem, algorithm, x, kernel, b, i)
             (*) tcp [?]: stepsize for chambollepock
             (*) scp [?]: stepsize for chambollepock
     %}
-    x = 0;
+    
+    %% Initialize Empty Input Struct Fields
+    i = salsa.aux.default_input_param_completion(i);
+
+    %% Set Norm based on Problem
+
+    %% Call Algorithm
+    
 end
