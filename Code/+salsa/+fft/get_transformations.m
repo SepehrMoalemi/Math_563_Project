@@ -1,4 +1,4 @@
-function [f_I_ATA, f_inv_I_ATA] = get_transformations(kernel, b, t)
+function [f_A, f_I_ATA, f_inv_I_ATA] = get_transformations(kernel, b, t)
     %% Constructing the K and D matrices
     % A = [K; D]
     [m, n] = size(b);
@@ -22,6 +22,9 @@ function [f_I_ATA, f_inv_I_ATA] = get_transformations(kernel, b, t)
 
     %% Dx : R^(m x n)->2 concat. R^(m x n)
     f_D = @(x) cat(3, f_D1(x), f_D2(x));
+    
+    %% Ax :  R^(m x n)->3 concat. R^(m x n)
+    f_A = @(x) cat(3,f_K(x), f_D1(x), f_D2(x));
     
     %% K'x, D1'x, D2'x : R^(m x n)->R^(m x n)
     f_K_T  = @(x) applyPeriodicConv2D(x, eig_K_T);

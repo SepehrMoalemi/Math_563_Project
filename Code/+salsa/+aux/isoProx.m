@@ -1,35 +1,35 @@
 %% Purpose: Prox of Isotropic function
-% ||x, y||iso = sum(sqrt(xi^2 + yi^2))
-% Assumes x = [x1, x2] 
-% x1 = x(:,:,1)
-% x2 = x(:,:,2)
-function x = isoProx(x, lambda)
+% ||w1, w2||iso = sum(sqrt(w1_i^2 + w2_i^2))
+% Assumes y2 = [w1, w2] 
+% w1 = y2(:,:,1)
+% w2 = y2(:,:,2)
+function x = isoProx(y2, lambda)
     arguments
-        x      (:,:,2) double
+        y2      (:,:,2) double
         lambda double {mustBePositive(lambda)} = 1
     end
-    %% Extract x = (x1,x2)
-    x1 = x(:,:,1);
-    x2 = x(:,:,2);
+    %% Extract x = (w1,w2)
+    w1 = y2(:,:,1);
+    w2 = y2(:,:,2);
     
-    %% Prox_lambda ||(x1,x2)||_iso
+    %% Prox_lambda ||(w1,w2)||_iso
     %{
-        prox_lambda ||(x1,x2)||_iso = (u, v)
+        prox_lambda ||(w1,w2)||_iso = (u, v)
     
-        Let rk = sqrt(x1_k^2 + x2_k^2)
+        Let rk = sqrt(w1_k^2 + w2_k^2)
 
-        (uk, vk) = alphak(x1_k, x2_k)
+        (uk, vk) = alphak(w1_k, w2_k)
 
                  { 1 - lambda/rk if rk > lambda
         alphak = {
                  { 0              else
     %}
-    [m, n] = size(x1);
+    [m, n] = size(w1);
     alpha = zeros(m,n);
     for i = 1:m
         for j = 1:n
-            if sqrt(x1(i,j)^2 + x2(i,j)^2) > lambda
-                alpha(i,j) = 1 - lambda/sqrt(x1(i,j)^2 + x2(i,j)^2);
+            if sqrt(w1(i,j)^2 + w2(i,j)^2) > lambda
+                alpha(i,j) = 1 - lambda/sqrt(w1(i,j)^2 + w2(i,j)^2);
             end
         end
     end

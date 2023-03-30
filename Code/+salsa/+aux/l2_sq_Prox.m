@@ -1,7 +1,7 @@
 %% Purpose: Prox of l2-norm
-function x = l2Prox(x, lambda)
+function x = l2_sq_Prox(x, lambda)
     arguments
-        x
+        x (:,:) double
         lambda double {mustBePositive(lambda)} = 1
     end
     %% Using Dual Norm

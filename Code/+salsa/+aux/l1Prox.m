@@ -1,7 +1,7 @@
 %% Purpose: Prox of l1-norm
 function x = l1Prox(x, lambda)
     arguments
-        x
+        x (:,:) double
         lambda double {mustBePositive(lambda)} = 1
     end
     %% Prox_lambda ||x||1 = sign(xi)(|xi| - lambda)_+

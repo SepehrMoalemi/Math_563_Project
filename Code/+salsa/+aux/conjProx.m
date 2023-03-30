@@ -1,17 +1,18 @@
 %% Purpose: Prox of Conjugate of a function
-% Given prox_s f
-% Calculates prox_s f^*
-function x = conjProx(prox, x, s)
+% Given prox_s of function h
+% Calculates prox_s h^*
+% Will only be used with prox_g1 and prox_g2
+function y = conjProx(prox_h, y, lambda)
     arguments
-        prox   function_handle
-        x      (:,:,2) double
-        s double {mustBePositive(s)} = 1
+        prox_h   function_handle
+        y      (:,:,3) double
+        lambda double {mustBePositive(lambda)} = 1
     end
     
     %% Moreau Decomposition
     %{
-        Prox_s f^*(x) = x - s*Prox_(1/s)f(x/s)
+        Prox_lambda h^*(x) = x - Prox_lambda h(x)
     %}
  
-    x = x - s*prox(x/s, 1/s);
+    y = y - prox_h(y, lambda);
 end
