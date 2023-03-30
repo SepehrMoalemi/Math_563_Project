@@ -1,4 +1,4 @@
-function [f_A, f_I_ATA, f_inv_I_ATA] = get_transformations(kernel, b, t)
+function [f_A, f_A_T, f_I_ATA, f_inv_I_ATA] = get_transformations(kernel, b, t)
     %% Constructing the K and D matrices
     % A = [K; D]
     [m, n] = size(b);
@@ -26,13 +26,16 @@ function [f_A, f_I_ATA, f_inv_I_ATA] = get_transformations(kernel, b, t)
     %% Ax :  R^(m x n)->3 concat. R^(m x n)
     f_A = @(x) cat(3,f_K(x), f_D1(x), f_D2(x));
     
-    %% K'x, D1'x, D2'x : R^(m x n)->R^(m x n)
-    f_K_T  = @(x) applyPeriodicConv2D(x, eig_K_T);
-    f_D1_T = @(x) applyPeriodicConv2D(x, eig_D1_T);
-    f_D2_T = @(x) applyPeriodicConv2D(x, eig_D2_T);
+    %% K'y1, D1'w1, D2'w2 : R^(m x n)->R^(m x n)
+    f_K_T  = @(y1) applyPeriodicConv2D(y1, eig_K_T);
+    f_D1_T = @(w1) applyPeriodicConv2D(w1, eig_D1_T);
+    f_D2_T = @(w2) applyPeriodicConv2D(w2, eig_D2_T);
 
-    %% D'y : 2 concat. R^(m x n)->R^(m x n)
-    f_D_T = @(y) f_D1_T(y(:,:,1)) + f_D2_T(y(:, :, 2));
+    %% D'y2 : 2 concat. R^(m x n)->R^(m x n)
+    f_D_T = @(y2) f_D1_T(y2(:,:,1)) + f_D2_T(y2(:, :, 2));
+    
+    %% A'y : 3 concat. R^(m x n)->R^(m x n)
+    f_A_T = @(y) f_K_T(y(:,:,1)) + f_D_T(y(:, :, 2:3));
 
     %% (I + K'K + D'D)x : R^(m x n)->R^(m x n)
     % Notes: (I + A'A) = (I + K'K + D'D)
