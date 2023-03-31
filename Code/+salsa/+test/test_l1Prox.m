@@ -1,13 +1,13 @@
 %% Purpose: Testing l1Prox
 function test_l1Prox()
     % random matrix size mxn in interval (a,b)
-    m = 5; n = 4;
+    m = 5; n = 2;
     a = -2; b = 4;
     x = a + (b-a).*rand(m, n);
-    
+
     % Get l1 prox
     lambda = 2;
-    prox_x = salsa.aux.l1Prox(x, lambda)
+    prox_x = salsa.aux.prox_lib.l1Prox(x, lambda)
     
     % Find min sol using matlab
     x = x(:);

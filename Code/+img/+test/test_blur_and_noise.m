@@ -33,6 +33,6 @@ function [kernel, b, J] = test_blur_and_noise(file_path, blur_type, noise_type, 
     [kernel, b] = img.add_blur(I, blur_type, pad_type);
 
     % Add Noise
-    J = img.add_noise(b, noise_type);
+    b = img.add_noise(b, noise_type);
 end
 

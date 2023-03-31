@@ -10,7 +10,7 @@ function x = salsa(problem, algorithm, x, kernel, b, i)
                                              'admm', ...
                                              'chambollepock'})}
 
-        x      double
+        x      struct
         kernel double
         b      double
         i      struct = salsa.defaults.get_input_param_def()
@@ -50,9 +50,15 @@ function x = salsa(problem, algorithm, x, kernel, b, i)
     
     %% Initialize Empty Input Struct Fields
     i = salsa.aux.default_input_param_completion(i);
+    i.kernel = kernel;
 
     %% Set Norm based on Problem
+    prox_f = @(x) salsa.aux.prox_f(x);
+    prox_g = @(x, lambda) salsa.aux.prox_g(problem, b, i, x, lambda);
 
     %% Call Algorithm
-    
+    param = "(prox_f, prox_g, x, b, i)";
+    package_path = "salsa.algorithms.";
+    solver = eval("@" + param + package_path + algorithm + param);
+    x = solver(prox_f, prox_g, x, b, i);
 end

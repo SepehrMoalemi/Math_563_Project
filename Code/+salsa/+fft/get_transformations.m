@@ -1,8 +1,9 @@
+%% FFT for Matrix Multiplications
 function [f_A, f_A_T, f_I_ATA, f_inv_I_ATA] = get_transformations(kernel, b, t)
     arguments
         kernel
         b
-        t double {mustBePositive(t)} = 1 %% This should be 1 in all algorithms but algo 2
+        t double {mustBePositive(t)} = 1
     end
 
     %% Constructing the K and D matrices

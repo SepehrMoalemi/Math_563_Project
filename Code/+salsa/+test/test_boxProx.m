@@ -3,11 +3,11 @@ function test_boxProx()
     % random matrix size mxn in interval (a,b)
     m = 5; n = 1;
     a = -2; b = 4;
-    x = a + (b-a).*rand(m, n);
+    x = a + (b-a).*rand(m, n)
 
     % Get boxProx 
     l = 0; u = 1;
-    prox_x = salsa.aux.boxProx(x, l, u)
+    prox_x = salsa.aux.prox_lib.boxProx(x, l, u)
     
     % Find min sol using matlab
     x = x(:);

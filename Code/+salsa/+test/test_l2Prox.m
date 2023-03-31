@@ -7,16 +7,13 @@ function test_l2Prox()
     
     % Get l1 prox
     lambda = 2;
-    prox_x = salsa.aux.l2Prox(x, lambda)
+    prox_x = salsa.aux.prox_lib.l2_sq_Prox(x, lambda)
     
-    % Find min sol using matlab
-    x_opt = zeros(m,n);
+    % Find min sol using matlab 
+    x = x(:);
     f = @(x) norm(x,2);
-    for i=1:n
-        xi = x(:,i);
-        prox = @(y) (1/2)*norm(xi - y)^2 + lambda*f(y);
-        options = optimoptions('fmincon', 'Display','none');
-        x_opt(:,i) = fmincon(prox,xi,[],[],[],[],[],[],[],options);
-    end
-    x_opt
+    prox = @(y) (1/2)*norm(x - y)^2 + lambda*f(y);
+    options = optimoptions('fmincon', 'Display','none');
+    x_opt = fmincon(prox,x,[],[],[],[],[],[],[],options);
+    x_opt = reshape(x_opt, m, [])
 end
