@@ -11,7 +11,7 @@ function test_l2Prox()
     
     % Find min sol using matlab 
     x = x(:);
-    f = @(x) norm(x,2);
+    f = @(x) norm(x,2)^2;                                 % This should be squared as the prox for this term is for l2 squared.
     prox = @(y) (1/2)*norm(x - y)^2 + lambda*f(y);
     options = optimoptions('fmincon', 'Display','none');
     x_opt = fmincon(prox,x,[],[],[],[],[],[],[],options);
