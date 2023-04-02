@@ -46,7 +46,8 @@ function y = prox_g(problem, b , i, y, lambda)
         3
         Where alpha = lamda*gamma
     %}
-
+    
+    % gamma = i.gammal1;     % update gamma each iter
     prox_g2 = salsa.aux.prox_lib.isoProx(y2, lambda*gamma);
     
     % Stack output into tensor

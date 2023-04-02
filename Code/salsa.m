@@ -55,6 +55,7 @@ function x = salsa(problem, algorithm, x, kernel, b, i)
     %% Set Norm based on Problem
     prox_f = @(x) salsa.aux.prox_f(x);
     prox_g = @(x, lambda) salsa.aux.prox_g(problem, b, i, x, lambda);
+    % prox_g = @(x, lambda, i) salsa.aux.prox_g(problem, b, i, x, lambda);      % To run with different denoising intensities each iter.
 
     %% Print Algorithm Parameters
     fprintf('\n==================================\n')

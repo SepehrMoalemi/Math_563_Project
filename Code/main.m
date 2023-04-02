@@ -76,7 +76,7 @@ i.gammal2 = 3;
     
     x.p0 = b;
     x.q0 = zeros(m,n,3);
-    
+
     % Set parameters
     i.gammal1 = 3;
     i.maxiter = 5*1e2;
@@ -84,6 +84,23 @@ i.gammal2 = 3;
     i.rhoprimaldualdr = 1e-3;
 
     x_out = salsa("l1","douglasrachfordprimaldual",x,kernel,b,i);
+
+    % --------------- admm ------------------ %
+    % x.x0 = b;
+    % x.y0 = zeros(m,n,3);
+    % x.z0 = zeros(m,n,3);
+    % x.u0 = b;
+    % x.w0 = b;
+    % 
+    % % Set parameters
+    % i.maxiter = 5*1e2;
+    % i.tcp = 1e-2;        % Note that this value is 1/t
+    % i.rho = 0.8;
+    % 
+    % i.gammal1 = 0.1;                         
+    % i.gammal2 = 3;  
+    % 
+    % x_out = salsa("l1","admm",x,kernel,b,i);
 
 % --------------------- Plot Deblurred --------------------- %
 fig = figure('Name','Deblurred Image' );
