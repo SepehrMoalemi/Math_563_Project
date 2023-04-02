@@ -50,16 +50,16 @@ i.gammal2 = 3;
 
 % --------------------- Algorithms --------------------- % 
     % --------------- chambollepock ------------------ %
-    x.x0 = b;
-    x.y0 = zeros(m,n,3);
-    x.z0 = b;
-    
-    % Set parameters
-    i.maxiter = 5*1e2;
-    i.tcp = 1e-2;
-    i.scp = 1e-2;
-
-    x_out = salsa("l2","chambollepock",x,kernel,b,i);
+%     x.x0 = b;
+%     x.y0 = zeros(m,n,3);
+%     x.z0 = b;
+%     
+%     Set parameters
+%     i.maxiter = 5*1e2;
+%     i.tcp = 1e-2;
+%     i.scp = 1e-2;
+% 
+%     x_out = salsa("l2","chambollepock",x,kernel,b,i);
 
     % ------ Primal Douglas-Rachford Splitting ------ %
 %     x.z1 = b;
@@ -71,6 +71,19 @@ i.gammal2 = 3;
 %     i.rhoprimaldr = 1e-1;
 % 
 %     x_out = salsa("l2","douglasrachfordprimal",x,kernel,b,i);
+
+    % ------ Primal-Dual Douglas-Rachford Splitting ------ %
+    
+    x.p0 = b;
+    x.q0 = zeros(m,n,3);
+    
+    % Set parameters
+    i.gammal1 = 3;
+    i.maxiter = 5*1e2;
+    i.tprimaldualdr = 1e-4;
+    i.rhoprimaldualdr = 1e-3;
+
+    x_out = salsa("l1","douglasrachfordprimaldual",x,kernel,b,i);
 
 % --------------------- Plot Deblurred --------------------- %
 fig = figure('Name','Deblurred Image' );
