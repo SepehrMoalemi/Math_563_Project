@@ -1,18 +1,13 @@
-%% Purpose: Prox of l2-norm
+%% Purpose: Prox of l2-norm-squared
 function x = l2_sq_Prox(x, lambda)
     arguments
         x (:,:) double
         lambda double {mustBePositive(lambda)} = 1
     end
     %% Using Dual Norm
-    %{
-        let s = x/lambda
-                             { x - lambda*s/|   |s|| for  ||s||  >  1
-        Prox_lambda ||x||  = { 
-                             { x - lambda*s       for  ||s||  <= 1
+    %{                      
+        Prox_lambda ||x||^2  = x/(1 + 2*lambda                      
     %}
-    %% Frobenius norm matrix := 2-norm vector
-    % x = max(1 - lambda/norm(x,'fro'), 0) * x;
-    x = x/(1+lambda*2);                                 % Use this one for l2-norm squared
+     x = x/(1 + 2*lambda);
 end
 

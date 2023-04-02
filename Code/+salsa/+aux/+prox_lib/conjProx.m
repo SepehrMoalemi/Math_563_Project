@@ -3,11 +3,11 @@
 % Calculates prox_s h^*
 % Will only be used with prox_g1 and prox_g2
 function y = conjProx(prox_h, y, lambda)
-    arguments
-        prox_h   function_handle
-        y      (:,:,3) double
-        lambda double {mustBePositive(lambda)} = 1
-    end
+%     arguments
+%         prox_h   function_handle
+%         y      (:,:,3) double
+%         lambda double {mustBePositive(lambda)} = 1
+%     end
     
     %% Moreau Decomposition
     %{

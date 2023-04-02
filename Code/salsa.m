@@ -56,9 +56,16 @@ function x = salsa(problem, algorithm, x, kernel, b, i)
     prox_f = @(x) salsa.aux.prox_f(x);
     prox_g = @(x, lambda) salsa.aux.prox_g(problem, b, i, x, lambda);
 
-    %% Call Algorithm
+    %% Print Algorithm Parameters
+    fprintf('\n==================================\n')
+    fprintf('Running %s with %s-norm using:\n', algorithm, problem);
+    fprintf('gamma = %G\n', eval(strcat('i.gamma',problem)));
+
+    %% Call Algorithms
+    tic
     param = "(prox_f, prox_g, x, b, i)";
-    package_path = "salsa.algorithms.";
-    solver = eval("@" + param + package_path + algorithm + param);
+    alg = "salsa.algorithms." + algorithm;
+    solver = eval("@" + param + alg + param);
     x = solver(prox_f, prox_g, x, b, i);
+    time = toc
 end

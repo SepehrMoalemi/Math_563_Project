@@ -28,10 +28,10 @@ function y = prox_g(problem, b , i, y, lambda)
     %}
     switch problem
         case 'l1'
-            prox_g1  = @(y1, lambda) salsa.aux.prox_lib.l1Prox(y1 - b, lambda);
+            prox_g1 = salsa.aux.prox_lib.l1Prox(y1 - b, lambda) + b;
             gamma = i.gammal1;
         case 'l2'
-            prox_g1  = @(y1, lambda) salsa.aux.prox_lib.l2_sq_Prox(y1 - b, lambda);
+            prox_g1 = salsa.aux.prox_lib.l2_sq_Prox(y1 - b, lambda) + b;
             gamma = i.gammal2;
     end
 
@@ -43,11 +43,13 @@ function y = prox_g(problem, b , i, y, lambda)
         And,
         
         Porx_lamda gamma*g2(y2) = Porx_alpha g2(y2)
-        
+        3
         Where alpha = lamda*gamma
-        
     %}
-    y = cat(3,prox_g1(y1, lambda), ...
-              salsa.aux.prox_lib.isoProx(y2, lambda*gamma));
+
+    prox_g2 = salsa.aux.prox_lib.isoProx(y2, lambda*gamma);
+    
+    % Stack output into tensor
+    y = cat(3,prox_g1,prox_g2);
 end
 

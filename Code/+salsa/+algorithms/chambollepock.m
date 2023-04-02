@@ -24,11 +24,22 @@ function xk = chambollepock(prox_tf, prox_g, x, b, i)
     zk = x.z0;
     yk = x.y0;
 
+    xk_old = xk;
+
     maxIter = i.maxiter;
     t = i.tcp; s = i.scp;
 
+    fprintf('stepsize of t = %G, s = %G.\n', t, s);
+    fprintf('==================================\n')
+
+    %% Chambolle-Pock Algorithm
     for k = 1:maxIter
+        if mod(k, 100) == 0
+            fprintf('Iteration %d/%d : ', k, maxIter);
+            fprintf('||xk - xk_1||/||xk_1|| = %G\n',norm(xk_old - xk)/norm(xk_old))
+        end
         xk_old = xk;
+
         yk = prox_sgc(yk + s*f_A(zk));
         xk = prox_tf(xk - t*f_A_T(yk));
         zk = 2*xk - xk_old;
