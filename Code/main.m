@@ -78,10 +78,10 @@ i.gammal2 = 3;
     x.q0 = zeros(m,n,3);
 
     % Set parameters
-    i.gammal1 = 3;
-    i.maxiter = 5*1e2;
-    i.tprimaldualdr = 1e-4;
-    i.rhoprimaldualdr = 1e-3;
+    i.gammal1 = 1.1;
+    i.maxiter = 2*1e2;
+    i.tprimaldualdr = 5e-2;
+    i.rhoprimaldualdr = 0.5;
 
     x_out = salsa("l1","douglasrachfordprimaldual",x,kernel,b,i);
 
