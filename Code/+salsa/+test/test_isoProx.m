@@ -1,5 +1,8 @@
 %% Purpose: Testing isoProx
-function test_isoProx()
+function result = test_isoProx(verbos)
+    arguments
+        verbos logical = true
+    end
     % random matrix size mxn in interval (a,b)
     m = 5; n = 2; k = 2;
     a = -2; b = 4;
@@ -7,7 +10,7 @@ function test_isoProx()
     
     % Get  iso prox
     lambda = 2;
-    argmin = salsa.aux.prox_lib.isoProx(x, lambda) 
+    argmin = salsa.aux.prox_lib.isoProx(x, lambda) ;
 
     % Find min sol using matlab 
     % Prox_lambda f(x) = argmin { 1/(2*lambda)*||x - y||^2 + f(y) }
@@ -17,11 +20,24 @@ function test_isoProx()
                 f(y);
     options = optimoptions('fmincon', 'Display','none');
     x_opt = fmincon(prox,x,[],[],[],[],[],[],[],options);
-    x_opt = reshape(x_opt, m, n , k)
+    x_opt = reshape(x_opt, m, n , k);
 
     % Comparing argmins
-    prox(argmin)
-    prox(x_opt)
+    fmin_argmin = prox(argmin);
+    fmin_solver = prox(x_opt);
+
+    % Print results if verbos
+    if verbos
+        display(x);
+        display(argmin);
+        display(x_opt);
+        display(fmin_argmin);
+        display(fmin_solver);
+    end
+
+    tol = 1e-3;
+    isClose = @(a, b) max(max(abs(a - b))) < tol;
+    result = isClose(fmin_argmin,fmin_solver);
 end
 
 %% Iso Norm

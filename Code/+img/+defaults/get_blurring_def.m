@@ -32,7 +32,7 @@ function args = get_blurring_def(type)
     
         % fspecial('motion',len,theta)
         case 'motion'
-            args = {9, 0};    
+            args = {5, 0};    
     end
 end
 

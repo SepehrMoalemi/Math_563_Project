@@ -51,11 +51,11 @@ function x = salsa(problem, algorithm, x, kernel, b, i)
     %% Initialize Empty Input Struct Fields
     i = salsa.aux.default_input_param_completion(i);
     i.kernel = kernel;
+    i.sample_rate = 128;
 
     %% Set Norm based on Problem
     prox_f = @(x) salsa.aux.prox_f(x);
     prox_g = @(x, lambda) salsa.aux.prox_g(problem, b, i, x, lambda);
-    % prox_g = @(x, lambda, i) salsa.aux.prox_g(problem, b, i, x, lambda);      % To run with different denoising intensities each iter.
 
     %% Print Algorithm Parameters
     fprintf('\n==================================\n')
@@ -63,10 +63,11 @@ function x = salsa(problem, algorithm, x, kernel, b, i)
     fprintf('gamma = %G\n', eval(strcat('i.gamma',problem)));
 
     %% Call Algorithms
-    tic
     param = "(prox_f, prox_g, x, b, i)";
     alg = "salsa.algorithms." + algorithm;
     solver = eval("@" + param + alg + param);
-    x = solver(prox_f, prox_g, x, b, i);
-    time = toc
+    [x, rel_err] = solver(prox_f, prox_g, x, b, i);
+
+    %% Plot Error
+    salsa.aux.plt_rel_err(rel_err, i.sample_rate)
 end
