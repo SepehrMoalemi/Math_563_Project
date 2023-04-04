@@ -14,7 +14,7 @@ function test_chambollepock(file_path)
     gammal2s  = 0.25*[1, 2, 4, 8];
 
     % ------ Optimization Algorithm Param ------ %
-    maxiters = 512*[1, 2, 4, 8];
+    maxiters = 100*[5, 10, 20, 40];
     tcps = 1e-4*[50, 10, 5, 1];
     scps = 1e-4*[50, 10, 5, 1];
 
@@ -35,12 +35,16 @@ function test_chambollepock(file_path)
                 % Blur Image
                 [kernel, b] = img.add_blur(I, blur_type, pad_type);
                 plt_blur_name = blur_type+"_"+pad_type;
-                saveas(gcf,"./Results/Blurring/"+plt_blur_name+".png")
+                dir_blur = "./Results/Blurring/";
+                salsa.util.mkdir_if_no_dir(dir_blur)
+                saveas(gcf,dir_blur+plt_blur_name+".png")
 
                 % Add Noise
                 b = img.add_noise(b, noise_type);
                 plt_img = plt_blur_name+"_"+noise_type;
-                saveas(gcf,"./Results/Noise/"+plt_img+".png")
+                dir_noise = "./Results/Noise/";
+                salsa.util.mkdir_if_no_dir(dir_noise)
+                saveas(gcf,dir_noise+plt_img+".png")
 
                 % Set initial conditions
                 [m, n] = size(b);
@@ -71,14 +75,16 @@ function test_chambollepock(file_path)
 
                                     % Run chambollepock
                                     x_out = salsa(problem,"chambollepock",x_intial,kernel,b,i);
-                                    saveas(gcf,"./Results/chambollepock/err_"+plt_name+plt_img+".png")
+                                    dir_res_chamb = "./Results/chambollepock/";
+                                    salsa.util.mkdir_if_no_dir(dir_res_chamb)
+                                    saveas(gcf,dir_res_chamb+"err_"+plt_name+plt_img+".png")
 
                                     % Plot Deblurred Image
                                     fig = figure('Name','Deblurred Image' );
                                     imshow(x_out,[])
-                                    saveas(fig,"./Results/chambollepock/"+plt_name+plt_img+".png")
+                                    saveas(fig,dir_res_chamb+plt_name+plt_img+".png")
 
-                                    close all;
+                                    %close all;
                                     
 %                                     break %<------------- Stop after 1 iter for now
                                 end

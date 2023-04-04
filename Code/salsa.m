@@ -51,7 +51,7 @@ function x = salsa(problem, algorithm, x, kernel, b, i)
     %% Initialize Empty Input Struct Fields
     i = salsa.aux.default_input_param_completion(i);
     i.kernel = kernel;
-    i.sample_rate = 128;
+    i.sample_rate = 100;
 
     %% Set Norm based on Problem
     prox_f = @(x) salsa.aux.prox_f(x);

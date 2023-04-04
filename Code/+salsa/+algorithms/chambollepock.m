@@ -12,8 +12,6 @@ function [xk, rel_err] = chambollepock(prox_tf, prox_g, x, b, i)
         Where A = [K D]'
         convergence is garunteed for s*t*(||A||^2) < 1
     %}
-    %% Time Code
-    tic
 
     %% Get fft Transformations
     [f_A, f_A_T, ~, ~] = salsa.fft.get_transformations(i.kernel, b);
@@ -26,13 +24,17 @@ function [xk, rel_err] = chambollepock(prox_tf, prox_g, x, b, i)
     zk = x.z0;
     yk = x.y0;
 
-    xk_old = xk;
-
-    maxIter = i.maxiter;
     t = i.tcp; s = i.scp;
-
     fprintf('stepsize of t = %G, s = %G.\n', t, s);
     fprintf('==================================\n')
+    
+    %% Time Code
+    tic
+    
+    xk_old = xk;
+    maxIter = i.maxiter;
+
+    
 
     %% Chambolle-Pock Algorithm
     time = 0;
