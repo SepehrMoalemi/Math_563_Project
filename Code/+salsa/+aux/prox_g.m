@@ -44,7 +44,7 @@ function y = prox_g(problem, b , i, y, lambda)
         Porx_lamda gamma*g2(y2) = Porx_alpha g2(y2)
         Where alpha = lamda*gamma
     %}
-    if lambda == 0
+    if gamma == 0
         prox_g2 = cat(3, zeros(size(y1)), zeros(size(y1)));
     else
         prox_g2 = salsa.aux.prox_lib.isoProx(y2, lambda*gamma);
