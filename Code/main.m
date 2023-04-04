@@ -8,7 +8,8 @@ spicy = false;  %Spicy activates the "./+salsa/+spicy" sub package of easter egg
 salsa.test.test_all_prox(false);
    
 %% Testing Algorithms
-salsa.test.test_chambollepock('./test_images/cameraman.jpg')
+% salsa.test.test_chambollepock('./test_images/cameraman.jpg')
+salsa.test.test_douglasrachfordprimal('./test_images/cameraman.jpg')
 
 %salsa.test.test_primaldual('./test_images/cameraman.jpg')
 

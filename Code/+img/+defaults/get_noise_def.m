@@ -10,7 +10,7 @@ function args = get_noise_def(type)
     switch type
         % J = imnoise(I,'gaussian',m,var_gauss)
         case 'gaussian'
-            args = {0, 0.005};
+            args = {0, 0.0005};
 
         % J = imnoise(I,'poisson')
         case 'poisson'
