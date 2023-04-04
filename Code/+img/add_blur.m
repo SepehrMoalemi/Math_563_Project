@@ -49,10 +49,16 @@ function [kernel, b] = add_blur(I, type, padding, show)
     
     %% Perform 2-D filtering to blur
     % Get Defaul Options based on type
-    args = img.defaults.get_blurring_def(type);
-    kernel = fspecial(type, args{:});
-    b = imfilter(I, kernel, padding);
-
+    
+    if strcmp(type, 'none')
+        b = I;
+        kernel = eye(3);
+    else
+        args = img.defaults.get_blurring_def(type);
+        kernel = fspecial(type, args{:});
+        b = imfilter(I, kernel, padding);
+    end
+    
     %% Display Image
     if show
         fig_name = "Image after Blurring";

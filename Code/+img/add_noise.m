@@ -5,8 +5,9 @@ function J = add_noise(I, type, show)
         type string {mustBeMember(type, ...
                                     {'gaussian',     ...
                                      'poisson',      ...
-                                     'salt & pepper' ...
-                                     'speckle'})}
+                                     'salt & pepper', ...
+                                     'speckle', ...
+                                     'none'})}
         show logical = true
     end
     %{
@@ -30,9 +31,13 @@ function J = add_noise(I, type, show)
     
     %% Add Noise
     % Get Defaul Options based on type
-    args = img.defaults.get_noise_def(type);
-    J = imnoise(I, type, args{:});
-
+    
+    if strcmp(type, 'none')
+        J = I;
+    else
+        args = img.defaults.get_noise_def(type);
+        J = imnoise(I, type, args{:});
+    end
     %% Display Image
     if show
         fig_name = "Image after adding Noise";
