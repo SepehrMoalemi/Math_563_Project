@@ -44,9 +44,11 @@ function y = prox_g(problem, b , i, y, lambda)
         Porx_lamda gamma*g2(y2) = Porx_alpha g2(y2)
         Where alpha = lamda*gamma
     %}
-
-    prox_g2 = salsa.aux.prox_lib.isoProx(y2, lambda*gamma);
-    
+    if lambda == 0
+        prox_g2 = cat(3, zeros(size(y1)), zeros(size(y1)));
+    else
+        prox_g2 = salsa.aux.prox_lib.isoProx(y2, lambda*gamma);
+    end
     % Stack output into tensor
     y = cat(3,prox_g1,prox_g2);
 end
