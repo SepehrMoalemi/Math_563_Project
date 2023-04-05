@@ -17,7 +17,7 @@ function [xk, rel_err] = chambollepock(prox_tf, prox_g, x, b, i)
     [f_A, f_A_T, ~, ~] = salsa.fft.get_transformations(i.kernel, b);
 
     %% Proximal Operators
-    prox_sgc = @(x) salsa.aux.prox_lib.conjProx(prox_g, x, i.scp);
+    prox_sgc = @(x) salsa.prox_lib.conjProx(prox_g, x, i.scp);
 
     %% Initialize
     xk = x.x0; 
@@ -34,15 +34,12 @@ function [xk, rel_err] = chambollepock(prox_tf, prox_g, x, b, i)
     xk_old = xk;
     maxIter = i.maxiter;
 
-    
-
     %% Chambolle-Pock Algorithm
     time = 0;
     sample_rate = i.sample_rate;
 
     indx = 1;
     rel_err = zeros(floor(maxIter/sample_rate),1);
-    
     fprintf('Using Rel_Error = ||xk - xk_1||/||xk_1||\n')
     for k = 1:maxIter
         if mod(k, sample_rate) == 0

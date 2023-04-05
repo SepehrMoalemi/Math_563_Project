@@ -6,6 +6,6 @@ function spill_the_beans()
     recipe_number = randi([1 6]);
     div = "---------";
     fprintf("%sSpilling the beans on recipe #%d%s\n", div, recipe_number, div);
-    file_path = "./+salsa/+extra/+recipes/recipe_" + num2str(recipe_number) + ".txt";
+    file_path = "./+salsa/+spicy/+recipes/recipe_" + num2str(recipe_number) + ".txt";
     disp(fileread(file_path))
 end

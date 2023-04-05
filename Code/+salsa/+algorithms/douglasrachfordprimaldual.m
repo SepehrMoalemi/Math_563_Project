@@ -1,16 +1,20 @@
 %% Purpose:  Primal-Dual Douglas-Rachford Splitting
 function [xk, rel_err] = douglasrachfordprimaldual(prox_tf, prox_g, x, b, i)
+    %% Get fft Transformations    
     t = i.tprimaldualdr;
     rho = i.rhoprimaldualdr;
     [f_A, f_A_T, ~, f_inv_I_ttATA] = salsa.fft.get_transformations(i.kernel, b, t);
 
+    %% Proximal Operators
+    prox_sgc = @(x) salsa.prox_lib.conjProx(prox_g, x, t);
+
+    %% Initialize
     pk = x.p0;
     qk = x.q0;
     xk = pk;
     
     fprintf('stepsize of t = %G, rho = %G.\n', t, rho);
     fprintf('==================================\n')
-    
     
     %% Time Code
     tic
@@ -37,7 +41,7 @@ function [xk, rel_err] = douglasrachfordprimaldual(prox_tf, prox_g, x, b, i)
         xk_old = xk;
 
         xk = prox_tf(pk);
-        zk = salsa.aux.prox_lib.conjProx(prox_g, qk, t);
+        zk = prox_sgc(qk);
         a_k = 2*xk - pk;
         b_k = 2*zk - qk;
         wk = f_inv_I_ttATA(a_k) - t*f_inv_I_ttATA(f_A_T(b_k));
@@ -46,5 +50,5 @@ function [xk, rel_err] = douglasrachfordprimaldual(prox_tf, prox_g, x, b, i)
         qk = qk + rho*(vk - zk);
     end
 
-    x = salsa.aux.prox_f(pk);
+    xk = prox_tf(pk);
 end

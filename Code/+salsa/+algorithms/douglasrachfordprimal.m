@@ -1,8 +1,5 @@
 %% Purpose: Primal Douglas-Rachford Splitting
 function [xk, rel_err] = douglasrachfordprimal(prox_tf, prox_g, x, b, i)
-    %% Time Code
-    tic
-
     %% Get fft Transformations
     [f_A, f_A_T, ~, f_inv_I_ATA] = salsa.fft.get_transformations(i.kernel, b);
 
@@ -23,6 +20,9 @@ function [xk, rel_err] = douglasrachfordprimal(prox_tf, prox_g, x, b, i)
     fprintf('stepsize t = %G\n', t);
     fprintf('==================================\n')
 
+    %% Time Code
+    tic
+    
     %% Primal Douglas-Rachford Splitting Algorithm
     time = 0;
     sample_rate = i.sample_rate;
@@ -54,4 +54,3 @@ function [xk, rel_err] = douglasrachfordprimal(prox_tf, prox_g, x, b, i)
     end
     fprintf('Total Elapsed Time: %f\n', toc);
 end
-

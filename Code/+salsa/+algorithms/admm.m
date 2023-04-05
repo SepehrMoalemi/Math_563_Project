@@ -1,4 +1,4 @@
-function xk = admm(prox_f, prox_g, x, b, i)
+function xk = admm(prox_tf, prox_g, x, b, i)
   %{ 
 TO BE ADJUSTED
         solves the generic convex optimization problem:
@@ -17,8 +17,7 @@ TO BE ADJUSTED
     [f_A, f_A_T, ~, f_inv_I_ATA] = salsa.fft.get_transformations(i.kernel, b);
 
     %% Get Prox g
-
-    % prox_g = @(x) prox_g('admm', b, i, x, i.tcp);
+    prox_tg = @(x) prox_g(x, i.tcp);
 
     %% Initialize
     xk = x.x0; 
@@ -28,7 +27,7 @@ TO BE ADJUSTED
     wk = x.w0;
 
     maxIter = i.maxiter;
-    t = i.tcp;            % This value is 1/t
+    t   = i.tcp;            % This value is 1/t
     rho = i.rho;
 
     fprintf('stepsize of 1/t = %G.\n', t);
@@ -47,10 +46,9 @@ TO BE ADJUSTED
         xk_old = xk;
 
         xk = f_inv_I_ATA(uk + f_A_T(yk) - t*(wk + f_A_T(zk)));
-        uk = prox_f(rho*xk + (1 - rho)*uk + t*wk);
-        yk = prox_g(rho*f_A(xk) + (1 - rho)*yk + t*zk, i.tcp, i);
+        uk = prox_tf(rho*xk + (1 - rho)*uk + t*wk);
+        yk = prox_tg(rho*f_A(xk) + (1 - rho)*yk + t*zk);
         wk = wk + t*(xk - uk);
         zk = zk + t*(f_A(xk) - yk);
-
     end
 end

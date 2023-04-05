@@ -2,38 +2,43 @@
 clc; clear; close all;
 
 %% Parameters
-spicy = false;  %Spicy activates the "./+salsa/+spicy" sub package of easter eggs 
+spicy = false;  %Spicy activates the "./+salsa/+spicy" subpackage of easter eggs 
 
-%% Testing Prox 
-salsa.test.test_all_prox(false);
-   
 %% Testing Algorithms
-% salsa.test.test_chambollepock('./test_images/cameraman.jpg')
-salsa.test.test_douglasrachfordprimal('./test_images/cameraman.jpg')
+img_path = salsa.defaults.get_img_def("salsa_default");
+% salsa.tests.test_chambollepock(img_path)
+% salsa.tests.test_douglasrachfordprimal(img_path)
+salsa.tests.test_primaldual(img_path)
 
-%salsa.test.test_primaldual('./test_images/cameraman.jpg')
-
-%% TODO
+%% --------------- Todo --------------------- %%
 %{
     get_input_param_def : Choose which defualt values to pick
-    test_conjProj_l2()  : Implement test 
+    
 %}
 
-%% Spicy Command List
+%% --------- Questions for Prof ------------- %%
+%{
+%}
+
+%% --------------- Tests --------------------- %%
+%% Testing Imgage Load + Blur + Noise + Display
+% img_path = salsa.defaults.get_img_def("salsa_default");
+% [kernel, b, bn] = salsa.tests.test_blur_and_noise(img_path, "gaussian", {}, "salt & pepper");
+
+%% Testing Blur Noise Combinations
+% save_figs = false;
+% salsa.tests.test_blur_noise_combos(save_figs);
+
+%% Testing Default Param Filler
+% salsa.tests.test_default_input_param_completion()
+   
+%% Testing Prox 
+% verbos = false;
+% salsa.tests.test_all_prox(verbos);
+
+%%  ---------- Spicy Command List --------- %%
 %{
     salsa.spicy.disp_salsa_bottle()
     salsa.spicy.disp_salsa_error()
     salsa.spicy.spill_the_beans()
-%}
-
-%% Questions for Prof
-%{
-%}
-
-%% Changes since last commit
-%{
-    Added offset support for l1 and l2 prox
-    Changed prox_g to use the offset
-    Added logical check for the prox tests
-    Implemented a test all prox that throws an error if a prox is incorrect
 %}
