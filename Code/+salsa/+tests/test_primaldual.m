@@ -4,21 +4,21 @@ function test_primaldual(file_path)
         file_path char {mustBeFile(file_path)}
     end
     % ------------- Image Param ---------------- %
-    blur_type  = "gaussian";
+    blur_type  = "motion";
     blur_arg   = {};
     noise_type = "gaussian";
     noise_arg  = {};
     pad_type   = "circular";
 
     % ------------ Problem Param --------------- %
-    problems = ["l2"];
-    gammal1s  = [0];%1*[1.1];
+    problems = ["l1"];
+    gammal1s  = 1*[0.2];
     gammal2s  = 0.25*[1, 2, 4, 8];
 
     % ------ Optimization Algorithm Param ------ %
-    maxiters = 100*[2];
-    ts = 1e-3*[5];
-    rhos = 1e-1*[5];
+    maxiters = 100*[5];
+    ts = 1e0*[8];
+    rhos = 1e-1*[4];
 
     % Load Image
     show_raw = false;
