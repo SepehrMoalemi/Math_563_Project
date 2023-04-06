@@ -1,24 +1,29 @@
-%% Purpose: Batch test Chambolle-Pock Method
-function test_primaldual(file_path)
+%% Purpose: Batch test ADMM Method
+function test_admm(file_path)
     arguments
         file_path char {mustBeFile(file_path)}
     end
     % ------------- Image Param ---------------- %
-    blur_type  = "gaussian";
+    blur_type  = "motion";
     blur_arg   = {};
     noise_type = "gaussian";
     noise_arg  = {};
     pad_type   = "circular";
 
     % ------------ Problem Param --------------- %
-    problems = ["l2"];
-    gammal1s  = [0];%1*[1.1];
-    gammal2s  = 0.25*[1, 2, 4, 8];
+    % problems = ["l1", "l2"];
+    problems = ["l1"];
+    % gammal1s  = 0.25*[1, 2, 4, 8];
+    % gammal2s  = 0.25*[1, 2, 4, 8];
+    gammal1s  = [0.1 0.01 0.001 0.0005];
+    gammal2s  = [3];
 
     % ------ Optimization Algorithm Param ------ %
-    maxiters = 100*[2];
-    ts = 1e-3*[5];
-    rhos = 1e-1*[5];
+    % maxiters = 100*[5, 10, 20, 40];
+    maxiters = 100*[1 2 3];
+    % tcps = 1e-4*[50, 10, 5, 1]
+    tcps = 1e-4*[100 10];
+    rhos = [0.5 0.6 0.7 0.8 0.9 1.0];
 
     % Load Image
     show_raw = false;
@@ -39,8 +44,11 @@ function test_primaldual(file_path)
 
     % Set initial conditions
     [m, n] = size(b);
-    x_intial.p0 = b;
-    x_intial.q0 = zeros(m,n,3);
+    x_initial.x0 = b;
+    x_initial.y0 = zeros(m,n,3);
+    x_initial.z0 = zeros(m,n,3);
+    x_initial.u0 = b;
+    x_initial.w0 = b;
     
     % Choose Norm Type
     for problem = problems
@@ -52,38 +60,38 @@ function test_primaldual(file_path)
             % Set Optimization Algorithm Param
             for maxiter = maxiters
                 i.maxiter = maxiter;
-                for t = ts
-                    i.tprimaldualdr  = t;
+                for tcp = tcps
+                    i.tcp = tcp;
                     for rho = rhos
-                        i.rhoprimaldualdr  = rho;
+                        i.rho = rho;
                         
                         plt_name =  problem + ...
                                     "_maxiter_" + num2str(maxiter)+ ...
                                     "_gamma_" + num2str(i.gammal1)+ ...
-                                    "_t_" + num2str(t)+ ...
+                                    "_tcp_" + num2str(tcp)+ ...
                                     "_rho_" + num2str(rho)+"_";
 
                         % Run chambollepock
-                        x_out = salsa.solver(problem,"douglasrachfordprimaldual",x_intial,kernel,b,i);
-                        dir_res_primaldual = "./Results/douglasrachfordprimaldual/";
-                        salsa.util.mkdir_if_no_dir(dir_res_primaldual)
-                        % saveas(gcf,dir_res_primaldual+"err_"+plt_name+plt_img+".png")
+                        x_out = salsa.solver(problem,"admm",x_initial,kernel,b,i);
+                        dir_res_admm = "./Results/admm/";
+                        salsa.util.mkdir_if_no_dir(dir_res_admm)
+                        saveas(gcf,dir_res_admm+"err_"+plt_name+".png")
 
                         % Plot Deblurred Image
                         fig = figure('Name','Deblurred Image' );
                         imshow(x_out,[])
-                        % saveas(fig,dir_res_primaldual+plt_name+plt_img+".png")
+                        saveas(fig,dir_res_admm+plt_name+".png")
 
                         % close all;
                         
-%                                     break %<------------- Stop after 1 iter for now
+                        break %<------------- Stop after 1 iter for now
                     end
-%                                 break %<---------------- Stop after 1 iter for now
+                    break %<---------------- Stop after 1 iter for now
                 end
-%                             break %<-------------------- Stop after 1 iter for now
+                break %<-------------------- Stop after 1 iter for now
             end
-%                         break %<------------------------ Stop after 1 iter for now
+            break %<------------------------ Stop after 1 iter for now
         end
-%                     break %<---------------------------- Stop after 1 iter for now
+        break %<---------------------------- Stop after 1 iter for now
     end
 end

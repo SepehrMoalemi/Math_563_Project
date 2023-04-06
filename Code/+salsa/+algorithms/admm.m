@@ -1,4 +1,4 @@
-function xk = admm(prox_tf, prox_g, x, b, i)
+function [xk, rel_err] = admm(prox_tf, prox_g, x, b, i)
   %{ 
 TO BE ADJUSTED
         solves the generic convex optimization problem:
@@ -34,15 +34,25 @@ TO BE ADJUSTED
     fprintf('==================================\n')
 
     %% ADMM Algorithm
+    tic
+
+    time = 0;
+    sample_rate = i.sample_rate;
+
+    indx = 1;
+    rel_err = zeros(floor(maxIter/sample_rate),1);
+    fprintf('Using Rel_Error = ||xk - xk_1||/||xk_1||\n')
+
     for k = 1:maxIter
-        if mod(k, 100) == 0
-            fprintf('Iteration %d/%d : ', k, maxIter);
-            fprintf('||xk - xk_1||/||xk_1|| = %G\n',norm(xk_old - xk)/norm(xk_old))
+        if mod(k, sample_rate) == 0
+            time = toc - time;
+            fprintf('[%d/%d]-[%G Sec/Iter]: ', k, maxIter,time/k);
+            iter_rel_err = norm(xk_old - xk)/norm(xk_old);
+            fprintf('Rel_Err = %0.2E\n',iter_rel_err);
+            rel_err(indx) = iter_rel_err;
+            indx = indx + 1;
         end
-        if mod(k, 500) == 0
-            fprintf("Start Denoising \n");
-            i.gammal1 = 3;
-        end
+
         xk_old = xk;
 
         xk = f_inv_I_ATA(uk + f_A_T(yk) - t*(wk + f_A_T(zk)));
@@ -51,4 +61,5 @@ TO BE ADJUSTED
         wk = wk + t*(xk - uk);
         zk = zk + t*(f_A(xk) - yk);
     end
+    fprintf('Total Elapsed Time: %f\n', toc);
 end
