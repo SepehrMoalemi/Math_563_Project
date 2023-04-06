@@ -12,18 +12,18 @@ function test_admm(file_path)
 
     % ------------ Problem Param --------------- %
     % problems = ["l1", "l2"];
-    problems = ["l1"];
+    problems = ["l1", "l2"];
     % gammal1s  = 0.25*[1, 2, 4, 8];
     % gammal2s  = 0.25*[1, 2, 4, 8];
-    gammal1s  = [0.1 0.01 0.001 0.0005];
-    gammal2s  = [3];
+    gammal1s  = [0.1 0.01 0.001 0.0001];
+    gammal2s  = [0.1 0.01 0.001 0.0001];
 
     % ------ Optimization Algorithm Param ------ %
     % maxiters = 100*[5, 10, 20, 40];
-    maxiters = 100*[1 2 3];
+    maxiters = 100*[3];
     % tcps = 1e-4*[50, 10, 5, 1]
-    tcps = 1e-4*[100 10];
-    rhos = [0.5 0.6 0.7 0.8 0.9 1.0];
+    tcps = 1e-4*[100 10 1];
+    rhos = [0.1 0.5 0.9];
 
     % Load Image
     show_raw = false;
@@ -82,16 +82,16 @@ function test_admm(file_path)
                         imshow(x_out,[])
                         saveas(fig,dir_res_admm+plt_name+".png")
 
-                        % close all;
+                        close all;
                         
-                        break %<------------- Stop after 1 iter for now
+                        % break %<------------- Stop after 1 iter for now
                     end
-                    break %<---------------- Stop after 1 iter for now
+                    % break %<---------------- Stop after 1 iter for now
                 end
-                break %<-------------------- Stop after 1 iter for now
+                % break %<-------------------- Stop after 1 iter for now
             end
-            break %<------------------------ Stop after 1 iter for now
+            % break %<------------------------ Stop after 1 iter for now
         end
-        break %<---------------------------- Stop after 1 iter for now
+        % break %<---------------------------- Stop after 1 iter for now
     end
 end

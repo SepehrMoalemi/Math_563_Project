@@ -11,6 +11,7 @@ function J = add_noise(I, type, args, show)
         args cell    = salsa.defaults.get_noise_def(type);
         show logical = true
     end
+
     %{
        %% imnoise options from MATLAB Doc
         J = imnoise(I,'gaussian',m,var_gauss):
@@ -34,6 +35,9 @@ function J = add_noise(I, type, args, show)
     if strcmp(type, 'none')
         J = I;
     else
+        if isempty(args)
+            args = salsa.defaults.get_noise_def(type);
+        end
         J = imnoise(I, type, args{:});
     end
     
