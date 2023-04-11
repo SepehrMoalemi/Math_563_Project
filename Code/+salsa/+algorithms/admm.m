@@ -27,7 +27,7 @@ TO BE ADJUSTED
     wk = x.w0;
 
     maxIter = i.maxiter;
-    t   = i.tcp;            % This value is 1/t
+    t   = i.tcp;
     rho = i.rho;
 
     fprintf('stepsize of 1/t = %G.\n', t);
@@ -55,9 +55,9 @@ TO BE ADJUSTED
 
         xk_old = xk;
 
-        xk = f_inv_I_ATA(uk + f_A_T(yk) - t*(wk + f_A_T(zk)));
-        uk = prox_tf(rho*xk + (1 - rho)*uk + t*wk);
-        yk = prox_tg(rho*f_A(xk) + (1 - rho)*yk + t*zk);
+        xk = f_inv_I_ATA(uk + f_A_T(yk) - 1/t*(wk + f_A_T(zk)));
+        uk = prox_tf(rho*xk + (1 - rho)*uk + 1/t*wk);
+        yk = prox_tg(rho*f_A(xk) + (1 - rho)*yk + 1/t*zk);
         wk = wk + t*(xk - uk);
         zk = zk + t*(f_A(xk) - yk);
     end
