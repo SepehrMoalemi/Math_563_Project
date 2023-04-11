@@ -11,19 +11,16 @@ function test_admm(file_path)
     pad_type   = "circular";
 
     % ------------ Problem Param --------------- %
-    % problems = ["l1", "l2"];
     problems = ["l1", "l2"];
-    % gammal1s  = 0.25*[1, 2, 4, 8];
-    % gammal2s  = 0.25*[1, 2, 4, 8];
-    gammal1s  = [0.1 0.01 0.001 0.0001];
-    gammal2s  = [0.1 0.01 0.001 0.0001];
+    gammal1s  = [0.15];                           % Put 0.01 if you want to see greater effect on blur reduction, but increase in noise.
+    gammal2s  = [0.15];
 
     % ------ Optimization Algorithm Param ------ %
     % maxiters = 100*[5, 10, 20, 40];
-    maxiters = 100*[3];
+    maxiters = 100*[1];
     % tcps = 1e-4*[50, 10, 5, 1]
-    tcps = 1e-4*[100 10 1];
-    rhos = [0.1 0.5 0.9];
+    tcps = 1e-4*[1000];
+    rhos = [0.1];
 
     % Load Image
     show_raw = false;
