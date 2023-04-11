@@ -27,47 +27,52 @@ function x = solver(problem, algorithm, x, kernel, b, i)
                       'admm'                      |
                       'chambollepock']
     
-        %% x_initial[?]: Initial Iterate
+        %% x_initial[(:,:) double]: Initial Iterate
     
-        %% kernel[?]: Convolution Kernel (refer to fspecial)
+        %% kernel[(:,:) double]: Convolution Kernel (refer to fspecial)
     
-        %% b[?]: Bluered and Noisy Image
+        %% b[(:,:) double]: Bluered and Noisy Image
     
         %% i[struct]: Input Parameter
             OPTIONS: 
             (*) maxiter [int]: Iteration Limit
-            (*) gammal1 [?]: Amount of De-noising in l1
-            (*) gammal2 [?]: Amount of De-noising in l2
-            (*) rhoprimaldr [?]: Relaxation Parameter rho in douglasrachfordprimal
-            (*) tprimaldr   [?]: Stepsize t   in douglasrachfordprimal
-            (*) rhoprimaldualdr [?]: Relaxation Parameter rho in douglasrachfordprimaldual
-            (*) tprimaldualdr   [?]: Stepsize t   in douglasrachfordprimaldual
-            (*) rhoadmm [?]: Relaxation Parameter pho in ADMM
-            (*) tadmm   [?]: Stepsize t in ADMM
-            (*) tcp [?]: stepsize for chambollepock
-            (*) scp [?]: stepsize for chambollepock
+            (*) gammal1 [double]: Amount of De-noising in l1
+            (*) gammal2 [double]: Amount of De-noising in l2
+            (*) rhoprimaldr [double]: Relaxation Parameter rho in douglasrachfordprimal
+            (*) tprimaldr   [double]: Stepsize t   in douglasrachfordprimal
+            (*) rhoprimaldualdr [double]: Relaxation Parameter rho in douglasrachfordprimaldual
+            (*) tprimaldualdr   [double]: Stepsize t   in douglasrachfordprimaldual
+            (*) rhoadmm [double]: Relaxation Parameter pho in ADMM
+            (*) tadmm   [double]: Stepsize t in ADMM
+            (*) tcp [double]: stepsize for chambollepock
+            (*) scp [double]: stepsize for chambollepock
+            (*) sample_rate [int]: Output to screen frequency
+            (*) verbos [logical]: Print to terminal or not
     %}
     
     %% Initialize Empty Input Struct Fields
     i = salsa.util.default_input_param_completion(i);
     i.kernel = kernel;
-    i.sample_rate = 100;
 
     %% Set Prox Functions
     prox_f = @(x)         salsa.prox_lib.prox_f(x);
     prox_g = @(x, lambda) salsa.prox_lib.prox_g(problem, b, i, x, lambda);
 
     %% Print Algorithm Parameters
-    fprintf('\n==================================\n')
-    fprintf('Running %s with %s-norm using:\n', algorithm, problem);
-    fprintf('gamma = %G\n', eval(strcat('i.gamma',problem)));
+    if i.verbos
+        fprintf('\n==================================\n')
+        fprintf('Running %s with %s-norm using:\n', algorithm, problem);
+        fprintf('gamma = %G\n', eval(strcat('i.gamma',problem)));
+    end
 
     %% Call Algorithms
     param = "(prox_f, prox_g, x, b, i)";
     alg = "salsa.algorithms." + algorithm;
-    solver = eval("@" + param + alg + param);
-    [x, rel_err] = solver(prox_f, prox_g, x, b, i);
+    algorithm = eval("@" + param + alg + param);
+    [x, rel_err] = algorithm(prox_f, prox_g, x, b, i);
 
-    %% Plot Error
-    salsa.util.plt_rel_err(rel_err, i.sample_rate)
+    %% Plot Convergence
+    if i.verbos
+        salsa.util.plt_rel_err(rel_err, i.sample_rate)
+    end
 end

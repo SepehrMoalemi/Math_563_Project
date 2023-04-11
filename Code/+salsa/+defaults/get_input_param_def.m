@@ -3,19 +3,21 @@ function i_def = get_input_param_def()
         %% i[struct]: Input Parameter
             OPTIONS: 
             (*) maxiter [int]: Iteration Limit
-            (*) gammal1 [?]: Amount of De-noising in l1
-            (*) gammal2 [?]: Amount of De-noising in l2
-            (*) rhoprimaldr [?]: Relaxation Parameter rho in douglasrachfordprimal
-            (*) tprimaldr   [?]: Stepsize t   in douglasrachfordprimal
-            (*) rhoprimaldualdr [?]: Relaxation Parameter rho in douglasrachfordprimaldual
-            (*) tprimaldualdr   [?]: Stepsize t   in douglasrachfordprimaldual
-            (*) rhoadmm [?]: Relaxation Parameter pho in ADMM
-            (*) tadmm   [?]: Stepsize t in ADMM
-            (*) tcp [?]: stepsize for chambollepock
-            (*) scp [?]: stepsize for chambollepock
+            (*) gammal1 [double]: Amount of De-noising in l1
+            (*) gammal2 [double]: Amount of De-noising in l2
+            (*) rhoprimaldr [double]: Relaxation Parameter rho in douglasrachfordprimal
+            (*) tprimaldr   [double]: Stepsize t   in douglasrachfordprimal
+            (*) rhoprimaldualdr [double]: Relaxation Parameter rho in douglasrachfordprimaldual
+            (*) tprimaldualdr   [double]: Stepsize t   in douglasrachfordprimaldual
+            (*) rhoadmm [double]: Relaxation Parameter pho in ADMM
+            (*) tadmm   [double]: Stepsize t in ADMM
+            (*) tcp [double]: stepsize for chambollepock
+            (*) scp [double]: stepsize for chambollepock
+            (*) sample_rate [int]: Output to screen frequency
+            (*) verbos [logical]: Print to terminal or not
     %}
     %% Default Values
-    i_def.maxiter = nan;
+    i_def.maxiter = 100;
 
     i_def.gammal1 = nan;         
     i_def.gammal2 = nan;
@@ -31,4 +33,7 @@ function i_def = get_input_param_def()
 
     i_def.tcp = nan;             
     i_def.scp = nan;
+
+    i_def.sample_rate = 10;
+    i_def.verbos = true;
 end
