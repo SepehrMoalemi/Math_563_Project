@@ -12,13 +12,13 @@ function test_primaldual(file_path)
 
     % ------------ Problem Param --------------- %
     problems = ["l1"];
-    gammal1s  = 1*[0.2];
+    gammal1s  = 1*[0.15];
     gammal2s  = 0.25*[1, 2, 4, 8];
 
     % ------ Optimization Algorithm Param ------ %
-    maxiters = 100*[10];
-    ts = 1e0*[5];
-    rhos = 1e-1*[4];
+    maxiters = 100*[5];
+    ts = 1e0*[0.5, 5, 50];
+    rhos = 1e-1*[3];
 
     % Load Image
     show_raw = false;
@@ -39,8 +39,8 @@ function test_primaldual(file_path)
 
     % Set initial conditions
     [m, n] = size(b);
-    x_intial.p0 = b;
-    x_intial.q0 = zeros(m,n,3);
+    x_initial.p0 = b;
+    x_initial.q0 = zeros(m,n,3);
 
     x_initial.x_original = I;
     
@@ -65,8 +65,8 @@ function test_primaldual(file_path)
                                     "_t_" + num2str(t)+ ...
                                     "_rho_" + num2str(rho)+"_";
 
-                        % Run chambollepock
-                        x_out = salsa.solver(problem,"douglasrachfordprimaldual",x_intial,kernel,b,i);
+                        % Run primal dual
+                        x_out = salsa.solver(problem,"douglasrachfordprimaldual",x_initial,kernel,b,i);
                         dir_res_primaldual = "./Results/douglasrachfordprimaldual/";
                         salsa.util.mkdir_if_no_dir(dir_res_primaldual)
                         % saveas(gcf,dir_res_primaldual+"err_"+plt_name+".png")

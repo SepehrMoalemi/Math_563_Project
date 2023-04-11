@@ -57,6 +57,9 @@ function x = solver(problem, algorithm, x, kernel, b, i)
     %% Set Prox Functions
     prox_f = @(x)         salsa.prox_lib.prox_f(x);
     prox_g = @(x, lambda) salsa.prox_lib.prox_g(problem, b, i, x, lambda);
+    
+    %% Set objective function
+    objective = @(x, f_A) salsa.objective.objective(x, b, problem, i, f_A);
 
     %% Print Algorithm Parameters
     if i.verbos
@@ -66,10 +69,10 @@ function x = solver(problem, algorithm, x, kernel, b, i)
     end
 
     %% Call Algorithms
-    param = "(prox_f, prox_g, x, b, i)";
+    param = "(objective, prox_f, prox_g, x, b, i)";
     alg = "salsa.algorithms." + algorithm;
     algorithm = eval("@" + param + alg + param);
-    [x, rel_err] = algorithm(prox_f, prox_g, x, b, i);
+    [x, rel_err] = algorithm(objective, prox_f, prox_g, x, b, i);
 
     %% Plot Convergence
     if i.verbos

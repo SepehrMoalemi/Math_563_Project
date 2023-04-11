@@ -6,9 +6,10 @@ spicy = false;  %Spicy activates the "./+salsa/+spicy" subpackage of easter eggs
 
 %% Testing Algorithms
 img_path = salsa.defaults.get_img_def("cameraman");
-salsa.tests.test_chambollepock(img_path)
+% salsa.tests.test_chambollepock(img_path)
 % salsa.tests.test_douglasrachfordprimal(img_path)
 % salsa.tests.test_admm(img_path)
+salsa.tests.test_primaldual(img_path)
 
 %% --------------- Todo --------------------- %%
 %{
