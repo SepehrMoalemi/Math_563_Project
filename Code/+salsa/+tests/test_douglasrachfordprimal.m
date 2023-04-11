@@ -41,6 +41,8 @@ function test_douglasrachfordprimal(file_path)
     [m, n] = size(b);
     x_intial.z1 = b;
     x_intial.z2 = zeros(m,n,3);
+
+    x_initial.x_original = I;
     
     % Choose Norm Type
     for problem = problems
@@ -65,12 +67,12 @@ function test_douglasrachfordprimal(file_path)
                         x_out = salsa.solver(problem,"douglasrachfordprimal",x_intial,kernel,b,i);
                         dir_res_douglasprimal = "./Results/douglasrachfordprimal/";
                         salsa.util.mkdir_if_no_dir(dir_res_douglasprimal)
-                        saveas(gcf,dir_res_douglasprimal+"err_"+plt_name+plt_img+".png")
+                        saveas(gcf,dir_res_douglasprimal+"err_"+plt_name+".png")
 
                         % Plot Deblurred Image
                         fig = figure('Name','Deblurred Image' );
                         imshow(x_out,[])
-                        saveas(fig,dir_res_douglasprimal+plt_name+plt_img+".png")
+                        saveas(fig,dir_res_douglasprimal+plt_name+".png")
                         %close all;
                         
 %                                     break %<------------- Stop after 1 iter for now

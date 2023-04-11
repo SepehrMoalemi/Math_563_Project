@@ -41,6 +41,8 @@ function test_primaldual(file_path)
     [m, n] = size(b);
     x_intial.p0 = b;
     x_intial.q0 = zeros(m,n,3);
+
+    x_initial.x_original = I;
     
     % Choose Norm Type
     for problem = problems
@@ -67,12 +69,12 @@ function test_primaldual(file_path)
                         x_out = salsa.solver(problem,"douglasrachfordprimaldual",x_intial,kernel,b,i);
                         dir_res_primaldual = "./Results/douglasrachfordprimaldual/";
                         salsa.util.mkdir_if_no_dir(dir_res_primaldual)
-                        % saveas(gcf,dir_res_primaldual+"err_"+plt_name+plt_img+".png")
+                        % saveas(gcf,dir_res_primaldual+"err_"+plt_name+".png")
 
                         % Plot Deblurred Image
                         fig = figure('Name','Deblurred Image' );
                         imshow(x_out,[])
-                        % saveas(fig,dir_res_primaldual+plt_name+plt_img+".png")
+                        % saveas(fig,dir_res_primaldual+plt_name+".png")
 
                         % close all;
                         
