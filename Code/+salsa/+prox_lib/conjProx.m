@@ -13,5 +13,6 @@ function y = conjProx(prox_h, y, lambda)
     %{
         Prox_lambda h^*(y) = y - Prox_lambda h(y)
     %}
-    y = y - prox_h(y, lambda);
+    s = lambda;
+    y = y - s*prox_h(y/s, 1/s);;
 end
