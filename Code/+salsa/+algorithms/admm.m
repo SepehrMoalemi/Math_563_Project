@@ -72,15 +72,9 @@ TO BE ADJUSTED
 
         xk_old = xk;
 
-<<<<<<< HEAD
-        xk = f_inv_I_ATA(uk + f_A_T(yk) - 1/t*(wk + f_A_T(zk)));
-        uk = prox_tf(rho*xk + (1 - rho)*uk + 1/t*wk);
-        yk = prox_tg(rho*f_A(xk) + (1 - rho)*yk + 1/t*zk);
-=======
         xk = f_inv_I_ATA(uk + f_A_T(yk) - (1/t)*(wk + f_A_T(zk)));
         uk = prox_tf(rho*xk + (1 - rho)*uk + wk/t);
         yk = prox_tg(rho*f_A(xk) + (1 - rho)*yk + zk/t);
->>>>>>> d0ee1d90ba5f005ba1f8637802e9b8c9640e3743
         wk = wk + t*(xk - uk);
         zk = zk + t*(f_A(xk) - yk);
     end

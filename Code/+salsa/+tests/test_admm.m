@@ -12,15 +12,15 @@ function test_admm(file_path)
 
     % ------------ Problem Param --------------- %
     problems = ["l1", "l2"];
-    gammal1s  = [0.015];                           % Put 0.01 if you want to see greater effect on blur reduction, but increase in noise.
-    gammal2s  = [0.015];
+    gammal1s  = [0.15];                           % Put 0.01 if you want to see greater effect on blur reduction, but increase in noise.
+    gammal2s  = [0.15];
 
     % ------ Optimization Algorithm Param ------ %
     % maxiters = 100*[5, 10, 20, 40];
-    maxiters = 100*[2];
+    maxiters = 100*[1];
     % tcps = 1e-4*[50, 10, 5, 1]
     tcps = 1e-4*[1000];
-    rhos = [0 0.3 0.8 1.2 1.7 2.0];
+    rhos = [0.1];
 
     % Load Image
     show_raw = false;

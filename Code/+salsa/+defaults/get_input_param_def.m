@@ -22,11 +22,11 @@ function i_def = get_input_param_def()
     i_def.gammal1 = nan;         
     i_def.gammal2 = nan;
 
-    i_def.rhoprimaldr = nan;    
+    i_def.rhoprimaldr = nan;
     i_def.tprimaldr   = nan;
 
     i_def.rhoprimaldualdr = nan; 
-    i_def.tprimaldualdr   = nan;
+    i_def.tprimaldualdr   = nan; 
 
     i_def.rhoadmm = nan;
     i_def.tadmm   = nan;
