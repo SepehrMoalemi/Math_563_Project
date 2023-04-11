@@ -4,21 +4,27 @@ function test_chambollepock(file_path)
         file_path char {mustBeFile(file_path)}
     end
     % ------------- Image Param ---------------- %
-    blur_type  = "gaussian";
+    blur_type  = "motion";
     blur_arg   = {};
     noise_type = "gaussian";
     noise_arg  = {};
     pad_type   = "circular";
 
     % ------------ Problem Param --------------- %
-    problems = ["l1", "l2"];
-    gammal1s  = 0.25*[1, 2, 4, 8];
-    gammal2s  = 0.25*[1, 2, 4, 8];
+%     problems = ["l1", "l2"];
+%     gammal1s  = 0.25*[1, 2, 4, 8];
+%     gammal2s  = 0.25*[1, 2, 4, 8];
+    problems = ["l1"];
+    gammal1s  = 0.15*[1];
+    gammal2s  = 0.15*[1];
 
     % ------ Optimization Algorithm Param ------ %
-    maxiters = 100*[5, 10, 20, 40];
-    tcps = 1e-4*[50, 10, 5, 1];
-    scps = 1e-4*[50, 10, 5, 1];
+%     maxiters = 100*[5, 10, 20, 40];
+%     tcps = 1e-4*[50, 10, 5, 1];
+%     scps = 1e-4*[50, 10, 5, 1];
+    maxiters = 100*[1];
+    tcps = 1e-3*[8];
+    scps = 1e-3*[8];
 
     % Load Image
     show_raw = false;
@@ -39,10 +45,13 @@ function test_chambollepock(file_path)
 
     % Set initial conditions
     [m, n] = size(b);
-    x_intial.x0 = b;
-    x_intial.y0 = zeros(m,n,3);
-    x_intial.z0 = b;
+    x_initial.x0 = b;
+    x_initial.y0 = zeros(m,n,3);
+    x_initial.z0 = b;
+
+    x_initial.x_original = I;
     
+    i.sample_rate = 10;
     % Choose Norm Type
     for problem = problems
         for indx = 1:length(gammal1s)
@@ -65,17 +74,17 @@ function test_chambollepock(file_path)
                                     "_scp_" + num2str(scp)+"_";
 
                         % Run chambollepock
-                        x_out = salsa.solver(problem,"chambollepock",x_intial,kernel,b,i);
+                        x_out = salsa.solver(problem,"chambollepock",x_initial,kernel,b,i);
                         dir_res_chamb = "./Results/chambollepock/";
                         salsa.util.mkdir_if_no_dir(dir_res_chamb)
-                        saveas(gcf,dir_res_chamb+"err_"+plt_name+plt_img+".png")
+                        saveas(gcf,dir_res_chamb+"err_"+plt_name+".png")
 
                         % Plot Deblurred Image
                         fig = figure('Name','Deblurred Image' );
                         imshow(x_out,[])
-                        saveas(fig,dir_res_chamb+plt_name+plt_img+".png")
+                        saveas(fig,dir_res_chamb+plt_name+".png")
 
-                        close all;
+%                         close all;
                         
                         break %<------------- Stop after 1 iter for now
                     end

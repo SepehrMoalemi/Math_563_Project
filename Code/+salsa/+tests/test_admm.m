@@ -50,6 +50,8 @@ function test_admm(file_path)
     x_initial.u0 = b;
     x_initial.w0 = b;
     
+    x_initial.x_original = I;
+
     % Choose Norm Type
     for problem = problems
         for indx = 1:length(gammal1s)
