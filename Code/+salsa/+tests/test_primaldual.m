@@ -16,8 +16,8 @@ function test_primaldual(file_path)
     gammal2s  = 0.25*[1, 2, 4, 8];
 
     % ------ Optimization Algorithm Param ------ %
-    maxiters = 100*[5];
-    ts = 1e0*[8];
+    maxiters = 100*[10];
+    ts = 1e0*[5];
     rhos = 1e-1*[4];
 
     % Load Image
