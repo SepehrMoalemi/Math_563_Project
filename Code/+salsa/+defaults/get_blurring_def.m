@@ -13,7 +13,7 @@ function args = get_blurring_def(type)
     switch type
         % Return Default bluring type
         case 'default'
-            args = 'gaussian';
+            args = 'motion';
 
         % fspecial('average',hsize)
         case 'average'

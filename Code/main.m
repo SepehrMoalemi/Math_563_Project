@@ -4,12 +4,28 @@ clc; clear; close all;
 %% Parameters
 spicy = false;  %Spicy activates the "./+salsa/+spicy" subpackage of easter eggs 
 
-%% Testing Algorithms
+%% Tune Algorithms
+%{
+    test_batch_tuning(file_path, algorithm, ...
+                      problems, gammal1s, gammal2s, ...
+                      arg1s, arg2s, ...
+                      maxIters, sample_rate, ...
+                      blur_type, blur_arg, ...
+                      noise_type, noise_arg, ...
+                      pad_type)
+    Where,
+    arg1s : t
+    arg2s : pho | s
+%}
 img_path = salsa.defaults.get_img_def("cameraman");
-% salsa.tests.test_chambollepock(img_path)
-salsa.tests.test_douglasrachfordprimal(img_path)
-% salsa.tests.test_admm(img_path)
-% salsa.tests.test_primaldual(img_path)
+
+% salsa.tests.test_batch_tuning(img_path, "admm", ...
+%                               "l1", 0.06, 1.0,  ...
+%                               1e-2*2, 1e-1*2)
+
+% salsa.tests.test_batch_tuning(img_path, "chambollepock", ...
+%                               "l1", 0.06, 1.0,  ...
+%                               1e-1*2, 1e-1*2)
 
 %% --------------- Todo --------------------- %%
 %{
