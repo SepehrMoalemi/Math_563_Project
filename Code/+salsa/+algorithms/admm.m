@@ -34,6 +34,7 @@ TO BE ADJUSTED
     maxIter = i.maxiter;
     t   = i.tcp;           
     rho = i.rho;
+    
 
     %% Get Prox g
     prox_tg = @(x) prox_g(x, 1/t);
@@ -45,10 +46,10 @@ TO BE ADJUSTED
     if isfield(x, 'x_original')
         f_val_err = @(xk, xk_old) norm(x.x_original - xk)/norm(x.x_original);
         opt_original = objective_fct(x.x_original);
-        f_opt_err = @(xk, xk_old) (objective_fct(xk) - opt_original)/opt_original;
+        f_opt_err = @(xk, xk_old) abs(objective_fct(xk) - opt_original)/opt_original;
     else
         f_val_err = @(xk, xk_old) norm(xk_old - xk)/norm(xk_old);
-        f_opt_err = @(xk, xk_old) (objective_fct(xk) - objective_fct(xk_old))/objective_fct(xk_old);
+        f_opt_err = @(xk, xk_old) abs(objective_fct(xk) - objective_fct(xk_old))/objective_fct(xk_old);
     end
 
     %% Print Params in use
@@ -67,7 +68,8 @@ TO BE ADJUSTED
 
     indx = 1;
     rel_err.val = zeros(floor(maxIter/sample_rate),1);
-    rel_err.opt = zeros(floor(maxIter/sample_rate),1);
+    rel_err.opt = zeros(floor(maxIter/sample_rate),1); 
+    rel_err.flag = i.flag;
 
     for k = 1:maxIter
         if mod(k, sample_rate) == 0 && i.verbos
