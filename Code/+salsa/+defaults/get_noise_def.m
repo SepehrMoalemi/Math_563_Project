@@ -11,7 +11,7 @@ function args = get_noise_def(type)
     switch type
         % Return Default noise type
         case 'default'
-            args = 'gaussian';
+            args = 'salt & pepper';
             
         % J = imnoise(I,'gaussian',m,var_gauss)
         case 'gaussian'
@@ -23,7 +23,7 @@ function args = get_noise_def(type)
     
         % J = imnoise(I,'salt & pepper',d)
         case 'salt & pepper'
-            args = {0.01};
+            args = {0.1};
     
         % J = imnoise(I,'speckle',var_speckle)
         case 'speckle'

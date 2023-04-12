@@ -6,25 +6,19 @@ function test_chambollepock(file_path)
     % ------------- Image Param ---------------- %
     blur_type  = "motion";
     blur_arg   = {};
-    noise_type = "gaussian";
+    noise_type = "salt & pepper";
     noise_arg  = {};
     pad_type   = "circular";
 
     % ------------ Problem Param --------------- %
-%     problems = ["l1", "l2"];
-%     gammal1s  = 0.25*[1, 2, 4, 8];
-%     gammal2s  = 0.25*[1, 2, 4, 8];
     problems = ["l1"];
-    gammal1s  = 0.15*[1];
-    gammal2s  = 0.15*[1];
+    gammal1s  = 0.06;
+    gammal2s  = 0.15;
 
     % ------ Optimization Algorithm Param ------ %
-%     maxiters = 100*[5, 10, 20, 40];
-%     tcps = 1e-4*[50, 10, 5, 1];
-%     scps = 1e-4*[50, 10, 5, 1];
-    maxiters = 100*[1];
-    tcps = 1e-3*[8];
-    scps = 1e-3*[8];
+    maxiters = 100*[5];
+    tcps = 1e-1*[2];
+    scps = 1e-1*[2];
 
     % Load Image
     show_raw = false;

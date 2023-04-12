@@ -53,14 +53,12 @@ function x = solver(problem, algorithm, x, kernel, b, i)
     %% Initialize Empty Input Struct Fields
     i = salsa.util.default_input_param_completion(i);
     i.kernel = kernel;
+    i.problem = problem;
 
     %% Set Prox Functions
     prox_f = @(x)         salsa.prox_lib.prox_f(x);
     prox_g = @(x, lambda) salsa.prox_lib.prox_g(problem, b, i, x, lambda);
     
-    %% Set objective function
-    objective = @(x, f_A) salsa.objective.objective(x, b, problem, i, f_A);
-
     %% Print Algorithm Parameters
     if i.verbos
         fprintf('\n==================================\n')
@@ -69,10 +67,10 @@ function x = solver(problem, algorithm, x, kernel, b, i)
     end
 
     %% Call Algorithms
-    param = "(objective, prox_f, prox_g, x, b, i)";
+    param = "(prox_f, prox_g, x, b, i)";
     alg = "salsa.algorithms." + algorithm;
     algorithm = eval("@" + param + alg + param);
-    [x, rel_err] = algorithm(objective, prox_f, prox_g, x, b, i);
+    [x, rel_err] = algorithm(prox_f, prox_g, x, b, i);
 
     %% Plot Convergence
     if i.verbos

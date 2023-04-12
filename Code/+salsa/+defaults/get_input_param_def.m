@@ -34,6 +34,6 @@ function i_def = get_input_param_def()
     i_def.tcp = nan;             
     i_def.scp = nan;
 
-    i_def.sample_rate = 2;
+    i_def.sample_rate = 10;
     i_def.verbos = true;
 end

@@ -1,16 +1,13 @@
 %% returns objective function lambda
-function result = objective(x, b, problem, i, f_A)
+function result = objective(x, b, f_A, i)
     arguments
         x
         b           double
-        problem     (1,:) char {mustBeMember(problem, ...
-                                            {'l1', ...
-                                             'l2'})}
-        i           struct
         f_A 
+        i           struct
     end
     %% Set objective function
-    switch problem
+    switch i.problem
         case 'l1'
             norm_fct = @(y1) norm(x-b, 1);
             gamma = i.gammal1;
@@ -19,9 +16,11 @@ function result = objective(x, b, problem, i, f_A)
             gamma = i.gammal2;
     end
     
-    y = f_A(x);
+    y  = f_A(x);
     y1 = y(:,:,1);
     y2 = y(:,:,2:3);
     
-    result = norm_fct(y1) + salsa.objective.indicator_box(x) + gamma*salsa.objective.norm_iso(y2);
+    result = norm_fct(y1) + ...
+             salsa.objective.indicator_box(x) + ...
+             gamma*salsa.objective.norm_iso(y2);
 end

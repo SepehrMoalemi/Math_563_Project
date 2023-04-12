@@ -39,8 +39,8 @@ function test_douglasrachfordprimal(file_path)
 
     % Set initial conditions
     [m, n] = size(b);
-    x_intial.z1 = b;
-    x_intial.z2 = zeros(m,n,3);
+    x_initial.z1 = b;
+    x_initial.z2 = zeros(m,n,3);
 
     x_initial.x_original = I;
     
@@ -64,7 +64,7 @@ function test_douglasrachfordprimal(file_path)
                                     "_gamma_" + num2str(i.gammal1)+"_";
 
                         % Run douglasrachfordprimal
-                        x_out = salsa.solver(problem,"douglasrachfordprimal",x_intial,kernel,b,i);
+                        x_out = salsa.solver(problem,"douglasrachfordprimal",x_initial,kernel,b,i);
                         dir_res_douglasprimal = "./Results/douglasrachfordprimal/";
                         salsa.util.mkdir_if_no_dir(dir_res_douglasprimal)
                         saveas(gcf,dir_res_douglasprimal+"err_"+plt_name+".png")

@@ -12,23 +12,15 @@ function test_admm(file_path)
 
     % ------------ Problem Param --------------- %
     problems = ["l1", "l2"];
-    %{
-        Tested as 
-            l1: [0.09 0.08 0.07 0.06]
-            l2: [0.2 0.1 0.008 0.005]
-            rhos:
-            tadmm:
-            maxiters:
-    %}
-    gammal1s  = [0.08 0.09];                
-    gammal2s  = [0.005 0.006];          % Must refer to the indexes of gammal1s
+    gammal1s  = [0.15];                           % Put 0.01 if you want to see greater effect on blur reduction, but increase in noise.
+    gammal2s  = [0.15];
 
     % ------ Optimization Algorithm Param ------ %
     % maxiters = 100*[5, 10, 20, 40];
     maxiters = 100*[1];
-    % tcps = 1e-4*[50, 10, 5, 1]
-    tadmm = 1e-4*[1000];
-    rhos = [0.9];
+    % tadmms = 1e-4*[50, 10, 5, 1]
+    tadmms = 1e-4*[1000];
+    rhoadmms = [0.1];
 
     % Load Image
     show_raw = false;
@@ -56,30 +48,27 @@ function test_admm(file_path)
     x_initial.w0 = b;
     
     x_initial.x_original = I;
-    i.flag = 68;
 
     % Choose Norm Type
     for problem = problems
-        i.flag = i.flag + 1;
         for indx = 1:length(gammal1s)
             % Set Problem Smoothing Params
             i.gammal1 = gammal1s(indx);
             i.gammal2 = gammal2s(indx);
-            
 
             % Set Optimization Algorithm Param
             for maxiter = maxiters
                 i.maxiter = maxiter;
-                for tcp = tadmm
-                    i.tcp = tcp;
-                    for rho = rhos
-                        i.rho = rho;
+                for tadmm = tadmms
+                    i.tadmm = tadmm;
+                    for rhoadmm = rhoadmms
+                        i.rhoadmm = rhoadmm;
                         
                         plt_name =  problem + ...
                                     "_maxiter_" + num2str(maxiter)+ ...
                                     "_gamma_" + num2str(i.gammal1)+ ...
-                                    "_tcp_" + num2str(tcp)+ ...
-                                    "_rho_" + num2str(rho)+"_";
+                                    "_tadmm_" + num2str(tadmm)+ ...
+                                    "_rhoadmm_" + num2str(rhoadmm)+"_";
 
                         % Run chambollepock
                         x_out = salsa.solver(problem,"admm",x_initial,kernel,b,i);
@@ -92,7 +81,7 @@ function test_admm(file_path)
                         imshow(x_out,[])
                         saveas(fig,dir_res_admm+plt_name+".png")
 
-                        % close all;
+                        close all;
                         
                         % break %<------------- Stop after 1 iter for now
                     end
@@ -104,12 +93,4 @@ function test_admm(file_path)
         end
         % break %<---------------------------- Stop after 1 iter for now
     end
-
-figure(69)
-legend('\gamma_1 = 0.08', '\gamma_1 = 0.09')
-saveas(figure(69),"./Results/admm/"+"69"+".png")
-
-figure(70)
-legend('\gamma_2 = 0.005', '\gamma_2 = 0.006')
-saveas(figure(70),"./Results/admm/"+"70"+".png")
 end

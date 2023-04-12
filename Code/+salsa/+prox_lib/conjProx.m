@@ -4,15 +4,14 @@
 % Will only be used with prox_g1 and prox_g2
 function y = conjProx(prox_h, y, lambda)
     arguments
-        prox_h   function_handle
+        prox_h function_handle
         y      (:,:,3) double
         lambda double {mustBePositive(lambda)} = 1
     end
     
     %% Moreau Decomposition
     %{
-        Prox_lambda h^*(y) = y - Prox_lambda h(y)
+        Prox_s h^*(y) = y - s*Prox_(1/s) h(y/s)
     %}
-    s = lambda;
-    y = y - s*prox_h(y/s, 1/s);;
+    y = y - lambda*prox_h(y/lambda, 1/lambda);
 end
