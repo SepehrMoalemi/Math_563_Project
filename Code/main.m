@@ -30,6 +30,10 @@ file_path = salsa.defaults.get_img_def("cameraman");
 %                               "l1", 0.06, 1.0,  ...
 %                               1e-1*2, 1e-1*2)
 
+% salsa.tests.test_batch_tuning(file_path, "douglasrachfordprimaldual", ...
+%                               "l1", 0.04, 1.0,  ...
+%                               1e0*5, 1e-1*3)
+
 %% --------------- Todo --------------------- %%
 %{
     get_input_param_def : Choose which defualt values to pick based on
