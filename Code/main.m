@@ -17,7 +17,10 @@ spicy = false;  %Spicy activates the "./+salsa/+spicy" subpackage of easter eggs
     arg1s : t
     arg2s : pho | s
 %}
-img_path = salsa.defaults.get_img_def("cameraman");
+
+
+file_path = salsa.defaults.get_img_def("cameraman");
+
 
 % salsa.tests.test_batch_tuning(img_path, "admm", ...
 %                               "l1", 0.06, 1.0,  ...

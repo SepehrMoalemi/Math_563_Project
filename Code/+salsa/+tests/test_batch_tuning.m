@@ -126,6 +126,8 @@ function test_batch_tuning(file_path, algorithm, ...
                         fig = figure('Name','Deblurred Image' );
                         imshow(x_out,[])
                         saveas(fig,dir_res_chamb+plt_name+".png")
+
+                        close all
                     end
                 end
             end
