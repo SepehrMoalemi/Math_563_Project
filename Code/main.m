@@ -28,9 +28,22 @@ img_path = salsa.defaults.get_img_def("cameraman");
 %                               1e-1*2, 1e-1*2, ...
 %                               10, 1)
 
+%Primal Dual
+
+  %Graph no noise
 % salsa.tests.test_batch_tuning(img_path, "douglasrachfordprimaldual", ...
-%                               "l1", [0.02, 0.04], 1.0,  ...
+%                               "l1", 0.000001, 1.0,  ...
+%                               1e0*[1,5,10], 1e-1*3, 500, 10, 'motion', ...
+%                               {}, 'none', {}, 'circular')
+                          
+% salsa.util.next()
+                          
+  % Graphs different gammas
+% salsa.tests.test_batch_tuning(img_path, "douglasrachfordprimaldual", ...
+%                               "l1", [0.01, 0.02, 0.03], 1.0,  ...
 %                               1e0*5, 1e-1*3)
+%                           
+% salsa.util.next()
 
 %% --------------- Todo --------------------- %%
 %{
