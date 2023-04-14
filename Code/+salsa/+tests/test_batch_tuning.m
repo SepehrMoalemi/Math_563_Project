@@ -98,7 +98,7 @@ function test_batch_tuning(file_path, algorithms, ...
 
     % Setup Storing figures
     fig_num = 0;
-    if legends == ""
+    if legends ~= ""
         fig_collection = gobjects([2,length(legends)]);
     else
         fig_collection = gobjects([2,1]);
@@ -211,7 +211,7 @@ function test_batch_tuning(file_path, algorithms, ...
     title(ax,'||x^k - x^*||/||x^*||')
     xlabel('Iteration Number'); ylabel('Relative Error')
     box('on');grid('on');
-    if legends == ""
+    if legends ~= ""
         legend(legends);
     end
     set(ax, 'Yscale','log', 'FontSize',14)
@@ -227,7 +227,7 @@ function test_batch_tuning(file_path, algorithms, ...
     title(ax,'(f(x^k) - f(x^*))/f(x^*)')
     xlabel(ax,'Iteration Number'); ylabel(ax,'Relative Objective Value')
     box('on');grid('on');
-    if legends == ""
+    if legends ~= ""
         legend(legends);
     end
     set(ax, 'Yscale','log', 'FontSize',14)
