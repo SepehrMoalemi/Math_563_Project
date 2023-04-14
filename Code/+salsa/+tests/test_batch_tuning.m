@@ -80,6 +80,7 @@ function test_batch_tuning(file_path, algorithms, ...
 
     % Make Legend
     mode = -1;
+    legends = NaN;
     for cell=1:param_len
         grid_len = length(params{cell});
         if grid_len > 1
@@ -97,7 +98,11 @@ function test_batch_tuning(file_path, algorithms, ...
 
     % Setup Storing figures
     fig_num = 0;
-    fig_collection = gobjects([2,length(legends)]);
+    if ~isnan(legends)
+        fig_collection = gobjects([2,length(legends)]);
+    else
+        fig_collection = gobjects([2,1]);
+    end
 
     %% Iterate Over Grid
     for algorithm = algorithms
@@ -192,8 +197,8 @@ function test_batch_tuning(file_path, algorithms, ...
     end
 
     %% Plot Merged Figures
-    fig_rel_err = fig_collection(1,:);
-    fig_rel_obj = fig_collection(2,:);
+    fig_rel_err = fig_collection(2,:);
+    fig_rel_obj = fig_collection(1,:);
     
     handleLine = findobj(fig_rel_err,'type','line');
     merged_fig = figure('Name',"Relative Error");
@@ -206,7 +211,9 @@ function test_batch_tuning(file_path, algorithms, ...
     title(ax,'||x^k - x^*||/||x^*||')
     xlabel('Iteration Number'); ylabel('Relative Error')
     box('on');grid('on');
-    legend(legends);
+    if ~isnan(legends)
+        legend(legends);
+    end
     set(ax, 'Yscale','log', 'FontSize',14)
 
     handleLine = findobj(fig_rel_obj,'type','line');
@@ -220,6 +227,8 @@ function test_batch_tuning(file_path, algorithms, ...
     title(ax,'(f(x^k) - f(x^*))/f(x^*)')
     xlabel(ax,'Iteration Number'); ylabel(ax,'Relative Objective Value')
     box('on');grid('on');
-    legend(legends);
+    if ~isnan(legends)
+        legend(legends);
+    end
     set(ax, 'Yscale','log', 'FontSize',14)
 end
