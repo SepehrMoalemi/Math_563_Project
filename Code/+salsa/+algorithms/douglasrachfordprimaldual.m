@@ -28,9 +28,8 @@ function [xk, rel_err] = douglasrachfordprimaldual(prox_tf, prox_g, x, b, i)
     prox_sgc = @(x) salsa.prox_lib.conjProx(prox_g, x, t);
     
     %% Relative Error Calculations
-    [f_val_err, f_opt_err] = salsa.util.rel_err_fun(x, b, f_A, i);
+    [obj_fun, f_val_err, f_opt_err] = salsa.util.rel_err_fun(x, b, f_A, i);
     
-    xk_old = xk;
     maxIter = i.maxiter;
 
     sample_rate = i.sample_rate;
@@ -39,21 +38,12 @@ function [xk, rel_err] = douglasrachfordprimaldual(prox_tf, prox_g, x, b, i)
     rel_err.opt = zeros(floor(maxIter/sample_rate),1);
 
     %% Primal-Dual Douglas-Rachford Splitting Algorithm
-    time = 0; indx = 1;
-    tic 
+    digits = numel(num2str(maxIter));
+    pad = repmat(' ',1, 2*digits+4);
+    fprintf('%sf_objective | Rel_Err_Val | Rel_Err_Opt\n',pad);
+    indx = 1;
+    tic
     for k = 1:maxIter
-        if mod(k, sample_rate) == 0 && i.verbos
-            time = toc - time;
-            fprintf('[%d/%d]-[%G Sec/Iter]: ', k, maxIter,time/k);
-
-            rel_err.val(indx) = f_val_err(xk, xk_old);
-            fprintf('Val_Err = %0.2E ',rel_err.val(indx));
-
-            rel_err.opt(indx) = f_opt_err(xk, xk_old);
-            fprintf('Opt_Err = %0.2E\n',rel_err.opt(indx));
-            
-            indx = indx + 1;
-        end
         xk_old = xk;
 
         xk = prox_tf(pk);
@@ -64,9 +54,20 @@ function [xk, rel_err] = douglasrachfordprimaldual(prox_tf, prox_g, x, b, i)
         vk = b_k + t*f_A(f_inv_I_ttATA(a_k)) - t^2*f_A(f_inv_I_ttATA(f_A_T(b_k)));
         pk = pk + rho*(wk -xk);
         qk = qk + rho*(vk - zk);
+
+        if mod(k, sample_rate) == 0 && i.verbos
+            rel_err.val(indx) = f_val_err(xk, xk_old);
+            rel_err.opt(indx) = f_opt_err(xk, xk_old);
+            f_obj = obj_fun(xk);
+            fprintf(['[%',num2str(digits),'d/%d]: '], k, maxIter);
+            fprintf('%9.2E  |',f_obj);
+            fprintf('%11.2E  |',rel_err.val(indx));
+            fprintf('%10.2E\n',rel_err.opt(indx));
+            indx = indx + 1;
+        end
     end
     xk = prox_tf(pk);
     if i.verbos
-        fprintf('Total Elapsed Time: %f\n', toc);
+        salsa.util.print_completion(rel_err.val, obj_fun(xk), toc);
     end
 end

@@ -32,7 +32,7 @@ function [xk, rel_err] = admm(prox_tf, prox_g, x, b, i)
     prox_tg = @(x) prox_g(x, 1/t);
   
     %% Relative Error Calculations
-    [f_val_err, f_opt_err] = salsa.util.rel_err_fun(x, b, f_A, i);
+    [obj_fun, f_val_err, f_opt_err] = salsa.util.rel_err_fun(x, b, f_A, i);
     
     xk_old = xk;
     maxIter = i.maxiter;
@@ -43,22 +43,12 @@ function [xk, rel_err] = admm(prox_tf, prox_g, x, b, i)
     rel_err.opt = zeros(floor(maxIter/sample_rate),1);
 
     %% ADMM Algorithm
-    time = 0; indx = 1;
-    tic 
+    digits = numel(num2str(maxIter));
+    pad = repmat(' ',1, 2*digits+4);
+    fprintf('%sf_objective | Rel_Err_Val | Rel_Err_Opt\n',pad);
+    indx = 1;
+    tic
     for k = 1:maxIter
-        if mod(k, sample_rate) == 0 && i.verbos
-            time = toc - time;
-            fprintf('[%d/%d]-[%G Sec/Iter]: ', k, maxIter,time/k);
-
-            rel_err.val(indx) = f_val_err(xk, xk_old);
-            fprintf('Val_Err = %0.2E ',rel_err.val(indx));
-
-            rel_err.opt(indx) = f_opt_err(xk, xk_old);
-            fprintf('Opt_Err = %0.2E\n',rel_err.opt(indx));
-
-            indx = indx + 1;
-        end
-
         xk_old = xk;
 
         xk = f_inv_I_ATA(uk + f_A_T(yk) - (1/t)*(wk + f_A_T(zk)));
@@ -66,9 +56,20 @@ function [xk, rel_err] = admm(prox_tf, prox_g, x, b, i)
         yk = prox_tg(rho*f_A(xk) + (1 - rho)*yk + zk/t);
         wk = wk + t*(xk - uk);
         zk = zk + t*(f_A(xk) - yk);
+
+        if mod(k, sample_rate) == 0 && i.verbos
+            rel_err.val(indx) = f_val_err(xk, xk_old);
+            rel_err.opt(indx) = f_opt_err(xk, xk_old);
+            f_obj = obj_fun(xk);
+            fprintf(['[%',num2str(digits),'d/%d]: '], k, maxIter);
+            fprintf('%9.2E  |',f_obj);
+            fprintf('%11.2E  |',rel_err.val(indx));
+            fprintf('%10.2E\n',rel_err.opt(indx));
+            indx = indx + 1;
+        end
     end
     xk = f_inv_I_ATA(uk + f_A_T(yk) - (1/t)*(wk + f_A_T(zk)));
     if i.verbos
-        fprintf('Total Elapsed Time: %f\n', toc);
+        salsa.util.print_completion(rel_err.val, obj_fun(xk), toc);
     end
 end

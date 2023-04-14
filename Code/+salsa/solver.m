@@ -50,10 +50,13 @@ function x = solver(problem, algorithm, x, kernel, b, i)
             (*) verbos [logical]: Print to terminal or not
     %}
     
-    %% Initialize Empty Input Struct Fields
+    %% Initialize Empty Input Struct Fields with DEFAULTs
     i = salsa.util.default_input_param_completion(i);
     i.kernel = kernel;
     i.problem = problem;
+
+    %% Initialize Starting Point Struct Fields with DEFAULTs
+    x = salsa.util.default_starting_point_completion(x, algorithm, b);
 
     %% Set Prox Functions
     prox_f = @(x)         salsa.prox_lib.prox_f(x);
@@ -61,9 +64,9 @@ function x = solver(problem, algorithm, x, kernel, b, i)
     
     %% Print Algorithm Parameters
     if i.verbos
-        fprintf('\n==================================\n')
+        fprintf('\n====================================================\n')
         fprintf('Running %s with %s-norm using:\n', algorithm, problem);
-        fprintf('gamma = %G\n', eval(strcat('i.gamma',problem)));
+        fprintf('gamma = %G, ', eval(strcat('i.gamma',problem)));
     end
 
     %% Call Algorithms

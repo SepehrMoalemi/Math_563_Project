@@ -2,7 +2,7 @@
 function test_batch_tuning(file_path, algorithms, ...
                            problems, gammal1s, gammal2s, ...
                            arg1s, arg2s, ...
-                           maxIters, sample_rate, ...
+                           maxiters, sample_rate, ...
                            blur_type, blur_arg, ...
                            noise_type, noise_arg, ...
                            pad_type)
@@ -13,18 +13,35 @@ function test_batch_tuning(file_path, algorithms, ...
                                          "douglasrachfordprimaldual", ...
                                          "admm", ...
                                          "chambollepock"])}
-        problems
-        gammal1s
-        gammal2s
-        arg1s
-        arg2s
-        maxIters    = 500
-        sample_rate = 10
-        blur_type = 'motion'
+        problems string {mustBeMember(problems, ...
+                                      ["l1", ...
+                                       "l2"])}
+        gammal1s double {mustBeNonnegative(gammal1s)}
+        gammal2s double {mustBeNonnegative(gammal2s)}
+        arg1s double {mustBePositive(arg1s)}
+        arg2s double {mustBePositive(arg2s)}
+        maxiters    double {mustBeInteger,mustBePositive(maxiters)}    = 500
+        sample_rate double {mustBeInteger,mustBePositive(sample_rate)} = 10
+        blur_type  string {mustBeMember(blur_type, ...
+                                        {'average',  ...
+                                         'disk',     ...
+                                         'gaussian'  ...
+                                         'log'       ...
+                                         'laplacian' ...
+                                         'motion' ...
+                                         'none'})} = 'motion'
         blur_arg  = {}
-        noise_type = 'salt & pepper'
+        noise_type string {mustBeMember(noise_type, ...
+                                        {'gaussian',     ...
+                                         'poisson',      ...
+                                         'salt & pepper', ...
+                                         'speckle', ...
+                                         'none'})} = 'salt & pepper'
         noise_arg  = {}
-        pad_type = 'circular'
+        pad_type string {mustBeMember(pad_type, ...
+                                      {'symmetric', ...
+                                       'replicate', ...
+                                       'circular'})} = 'circular'
     end
 
     %% Load Image
@@ -44,14 +61,13 @@ function test_batch_tuning(file_path, algorithms, ...
 
     %% Add Noise
     b = salsa.img.add_noise(b, noise_type, noise_arg);
-    [m, n] = size(b);
     
     %% Set Printing Rate
     i.sample_rate = sample_rate;
 
     %% Figure Merger
     % Choose arg2 legend name based on alg
-    arg2_name = "rho";
+    arg2_name = "\rho";
     if algorithms(1) == "chambollepock"
         arg2_name = "s";
     end
@@ -98,21 +114,36 @@ function test_batch_tuning(file_path, algorithms, ...
 
     % Setup Storing figures
     fig_num = 0;
-    if legends ~= ""
-        fig_collection = gobjects([2,length(legends)]);
-    else
-        fig_collection = gobjects([2,1]);
-    end
+    fig_collection = gobjects([2,length(legends)]);
 
     %% Iterate Over Grid
-    for algorithm = algorithms
-        for problem = problems
+    problems_grid = problems;
+    gammal1s_grid = gammal1s;
+    gammal2s_grid = gammal2s;
+    maxiters_grid = maxiters;
+    arg1s_grid = arg1s;
+    arg2s_grid = arg2s;
+    
+    alg_grid_len = length(algorithms);
+    for alg_indx = 1:alg_grid_len
+        % Set Algorithm
+        algorithm = algorithms(alg_indx);
+        if alg_grid_len > 1
+            problems_grid = problems(alg_indx);
+            gammal1s_grid = gammal1s(alg_indx);
+            gammal2s_grid = gammal2s(alg_indx);
+            maxiters_grid = maxiters(alg_indx);
+            arg1s_grid = arg1s(alg_indx);
+            arg2s_grid = arg2s(alg_indx);
+        end
+
+        for problem = problems_grid
                 switch problem
                     case 'l1'
-                        gammas = gammal1s;
+                        gammas = gammal1s_grid;
     
                     case 'l2'
-                        gammas = gammal2s;
+                        gammas = gammal2s_grid;
                 end
             for gamma = gammas
                 % Set Problem Smoothing Params
@@ -120,10 +151,10 @@ function test_batch_tuning(file_path, algorithms, ...
                 i.gammal2 = gamma;
     
                 % Set Optimization Algorithm Param
-                for maxiter = maxIters
-                    i.maxiter = maxiter;
-                    for arg1 = arg1s
-                        for arg2 = arg2s
+                for maxiter = maxiters
+                    i.maxiter = maxiters_grid;
+                    for arg1 = arg1s_grid
+                        for arg2 = arg2s_grid
                             %% Set Initial Conditions
                             switch algorithm
                                 case "douglasrachfordprimal"
@@ -131,37 +162,24 @@ function test_batch_tuning(file_path, algorithms, ...
                                     i.rhoprimaldr = arg2;
                                     arg1_name = "tprimaldr";
                                     arg2_name = "rhoprimaldr";
-                                    x_init.z1 = b;
-                                    x_init.z2 = zeros(m,n,3);
-    
     
                                 case "douglasrachfordprimaldual"
                                     i.tprimaldualdr   = arg1;
                                     i.rhoprimaldualdr = arg2;
                                     arg1_name = "tprimaldualdr";
                                     arg2_name = "rhoprimaldualdr";
-                                    x_init.p0 = b;
-                                    x_init.q0 = zeros(m,n,3);
     
                                 case "admm"
                                     i.tadmm   = arg1;
                                     i.rhoadmm = arg2;
                                     arg1_name = "tadmm";
                                     arg2_name = "rhoadmm";
-                                    x_init.x0 = b;
-                                    x_init.y0 = zeros(m,n,3);
-                                    x_init.z0 = zeros(m,n,3);
-                                    x_init.u0 = b;
-                                    x_init.w0 = b;
     
                                 case "chambollepock"
                                     i.tcp = arg1;
                                     i.scp = arg2;
                                     arg1_name = "tcp";
                                     arg2_name = "scp";
-                                    x_init.x0 = b;
-                                    x_init.y0 = zeros(m,n,3);
-                                    x_init.z0 = b;
                             end
     
                             plt_name =  problem + ...
@@ -173,8 +191,8 @@ function test_batch_tuning(file_path, algorithms, ...
                             % Run Algorithm
                             x_out = salsa.solver(problem, algorithm, x_init, kernel, b, i);
                             
-                            dir_res_chamb = "./Results/" + algorithm + "/";
-                            salsa.util.mkdir_if_no_dir(dir_res_chamb)
+                            dir_res_alg = "./Results/" + algorithm + "/";
+                            salsa.util.mkdir_if_no_dir(dir_res_alg)
 
                             % Store Figures
                             figs = findobj('Type', 'figure');
@@ -184,7 +202,7 @@ function test_batch_tuning(file_path, algorithms, ...
                             % Plot Deblurred Image
                             fig = figure('Name',"Deblurred Image #" + num2str(fig_num) );
                             imshow(x_out,[])
-                            saveas(fig,dir_res_chamb+plt_name+".png")
+                            saveas(fig,dir_res_alg+plt_name+".png")
                             
                             if mode == 1
                                 close all;
@@ -194,41 +212,46 @@ function test_batch_tuning(file_path, algorithms, ...
                 end
             end
         end
-    end
+    end 
 
     %% Plot Merged Figures
-    fig_rel_err = fig_collection(2,:);
-    fig_rel_obj = fig_collection(1,:);
-    
-    handleLine = findobj(fig_rel_err,'type','line');
-    merged_fig = figure('Name',"Relative Error");
-    ax = axes(merged_fig);
-    hold on;
-    for indx = 1:length(handleLine)
-        line = handleLine(indx);
-        plot(get(line,'XData'), get(line,'YData'), '--') ;
-    end
-    title(ax,'||x^k - x^*||/||x^*||')
-    xlabel('Iteration Number'); ylabel('Relative Error')
-    box('on');grid('on');
-    if legends ~= ""
-        legend(legends);
-    end
-    set(ax, 'Yscale','log', 'FontSize',14)
+    if mode ~= -1
+        dir_merg_res = "./Results/Merged/";
+        salsa.util.mkdir_if_no_dir(dir_merg_res);
 
-    handleLine = findobj(fig_rel_obj,'type','line');
-    merged_fig = figure('Name',"Optimality gap");
-    ax = axes(merged_fig);
-    hold on;
-    for indx = 1:length(handleLine)
-        line = handleLine(indx);
-        plot(get(line,'XData'), get(line,'YData'), '--') ;
+        fig_name = ["Relative Objective Value", "Relative Error"];
+        title_name = ["|f(x^k) - f(x^*)|/|f(x^*)|", "||x^k - x^*||/||x^*||"];
+        for k = 1:2
+            % Extract data
+            fig_data = fig_collection(k,:);
+    
+            % Get line from figure data
+            handleLine = findobj(fig_data,'type','line');
+    
+            % Make new figure 
+            merged_fig = figure('Name',fig_name(k));
+            ax = axes(merged_fig);
+    
+            % Plot all lines on the new figure
+            hold on;
+            for indx = 1:length(handleLine)
+                line = handleLine(indx);
+                plot(get(line,'XData'), get(line,'YData'), '--') ;
+            end
+    
+            % Add title, label, legend
+            title(ax,title_name(k))
+            xlabel('Iteration Number'); ylabel(fig_name(k))
+            box('on'); grid('on');
+            legend(legends);
+    
+            % Set Y axis to log
+            set(ax, 'Yscale','log', 'FontSize',14)
+
+            % Save Figure
+            merged_name = fig_name(k)+legends(k);
+            merged_name = replace(merged_name,{' ', '\', '.'},"_");
+            saveas(merged_fig,dir_merg_res+merged_name+".png")
+        end
     end
-    title(ax,'(f(x^k) - f(x^*))/f(x^*)')
-    xlabel(ax,'Iteration Number'); ylabel(ax,'Relative Objective Value')
-    box('on');grid('on');
-    if legends ~= ""
-        legend(legends);
-    end
-    set(ax, 'Yscale','log', 'FontSize',14)
 end

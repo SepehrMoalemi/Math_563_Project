@@ -42,6 +42,8 @@ function [xk, rel_err] = chambollepock(prox_tf, prox_g, x, b, i)
     %% Relative Error Calculations
     [obj_fun, f_val_err, f_opt_err] = salsa.util.rel_err_fun(x, b, f_A, i);
     
+    xk_old = xk;
+    f_obj_initial = obj_fun(xk_old);
     maxIter = i.maxiter;
 
     sample_rate = i.sample_rate;
@@ -52,9 +54,9 @@ function [xk, rel_err] = chambollepock(prox_tf, prox_g, x, b, i)
     %% Chambolle-Pock Algorithm
     digits = numel(num2str(maxIter));
     pad = repmat(' ',1, 2*digits+4);
-    fprintf('%sf_objective | Rel_Err_Val | Rel_Err_Opt\n',pad);
     indx = 1;
     tic
+    fprintf('%sf_objective | Rel_Err_Val | Rel_Err_Opt\n',pad)
     for k = 1:maxIter
         xk_old = xk;
 
@@ -67,13 +69,18 @@ function [xk, rel_err] = chambollepock(prox_tf, prox_g, x, b, i)
             rel_err.opt(indx) = f_opt_err(xk, xk_old);
             f_obj = obj_fun(xk);
             fprintf(['[%',num2str(digits),'d/%d]: '], k, maxIter);
-            fprintf('%9.2E  |',f_obj);
-            fprintf('%11.2E  |',rel_err.val(indx));
-            fprintf('%10.2E\n',rel_err.opt(indx));
+            fprintf('%0.2E   | ',f_obj);
+            fprintf('  %0.2E  | ',rel_err.val(indx));
+            fprintf(' %0.2E\n',rel_err.opt(indx));
             indx = indx + 1;
+
+            if mod(k, 100) == 0
+                figure('Name','Deblurred Image' );
+                imshow(xk,[]);
+            end
         end
     end
     if i.verbos
-        salsa.util.print_completion(rel_err.val, obj_fun(xk), toc);
+        salsa.util.print_completion()
     end
 end

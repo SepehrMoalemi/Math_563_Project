@@ -18,24 +18,27 @@ spicy = false;  %Spicy activates the "./+salsa/+spicy" subpackage of easter eggs
     arg2s : pho | s
 %}
 img_path = salsa.defaults.get_img_def("cameraman");
-% 
+
+%{ ----------------------------- ADMM ----------------------------- }%
 % salsa.tests.test_batch_tuning(img_path, "admm", ...
 %                               "l1", 0.06, 1.0,  ...
 %                               1e-2*2, 1e-1*2)
-% 
-% salsa.tests.test_batch_tuning(img_path, "chambollepock", ...
-%                               "l1", [0.06, 0.07], 1.0,  ...
-%                               1e-1*2, 1e-1*2, ...
-%                               10, 1)
 
-%Primal Dual
+%{ -------------------------- Chambollepock ----------------------- }%
+salsa.tests.test_batch_tuning(img_path, "chambollepock", ...
+                              "l1", [0.03, 0.06], 0.0,  ...
+                              0.2, 0.9, ...
+                              100, 10, ...
+                              "motion",{}, ...
+                              "salt & pepper", {})
 
+%{ --------------------------- Primal Dual ------------------------- }%
   %Graph no noise
 % salsa.tests.test_batch_tuning(img_path, "douglasrachfordprimaldual", ...
 %                               "l1", 0.000001, 1.0,  ...
 %                               1e0*[1,5,10], 1e-1*3, 500, 10, 'motion', ...
 %                               {}, 'none', {}, 'circular')
-                          
+%                           
 % salsa.util.next()
                           
   % Graphs different gammas
@@ -72,3 +75,8 @@ img_path = salsa.defaults.get_img_def("cameraman");
     salsa.spicy.disp_salsa_error()
     salsa.spicy.spill_the_beans()
 %}
+% n = 110;
+% digits = numel(num2str(n));
+% for i=1:10:n
+%     fprintf(['%',num2str(digits),'d\n'], i);
+% end
