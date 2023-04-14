@@ -69,7 +69,6 @@ TO BE ADJUSTED
     indx = 1;
     rel_err.val = zeros(floor(maxIter/sample_rate),1);
     rel_err.opt = zeros(floor(maxIter/sample_rate),1); 
-    rel_err.flag = i.flag;
 
     for k = 1:maxIter
         if mod(k, sample_rate) == 0 && i.verbos

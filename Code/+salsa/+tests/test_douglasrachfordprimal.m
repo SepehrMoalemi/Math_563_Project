@@ -44,8 +44,19 @@ function test_douglasrachfordprimal(file_path)
 
     x_initial.x_original = I;
     
-    % Choose Norm Type
+    i.comb_plot = false;
+    if i.comb_plot == true
+        fig_l1 = figure(100);legend;hold on; 
+        fig_l2 = figure(200);legend;hold on;
+    end
+
+    % Choose problem
     for problem = problems
+        if problem == "l1" && i.comb_plot == true
+            i.fig = fig_l1;
+        elseif problem == "l2" && i.comb_plot == true
+            i.fig = fig_l2;
+        end
         for indx = 1:length(gammal1s)
             % Set Problem Smoothing Params
             i.gammal1 = gammal1s(indx);

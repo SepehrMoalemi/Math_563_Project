@@ -25,7 +25,7 @@ function test_admm(file_path)
 
     % ------ Optimization Algorithm Param ------ %
     % maxiters = 100*[5, 10, 20, 40];
-    maxiters = 100*[1];
+    maxiters = 6*[1];
     % tcps = 1e-4*[50, 10, 5, 1]
     tadmm = 1e-4*[1000];
     rhos = [0.9];
@@ -56,11 +56,20 @@ function test_admm(file_path)
     x_initial.w0 = b;
     
     x_initial.x_original = I;
-    i.flag = 68;
+    
+    i.comb_plot = true;
+    if i.comb_plot == true
+        fig_l1 = figure(100);legend;hold on; 
+        fig_l2 = figure(200);legend;hold on;
+    end
 
-    % Choose Norm Type
+    % Choose problem
     for problem = problems
-        i.flag = i.flag + 1;
+        if problem == "l1" && i.comb_plot == true
+            i.fig = fig_l1;
+        elseif problem == "l2" && i.comb_plot == true
+            i.fig = fig_l2;
+        end
         for indx = 1:length(gammal1s)
             % Set Problem Smoothing Params
             i.gammal1 = gammal1s(indx);
@@ -104,12 +113,4 @@ function test_admm(file_path)
         end
         % break %<---------------------------- Stop after 1 iter for now
     end
-
-figure(69)
-legend('\gamma_1 = 0.08', '\gamma_1 = 0.09')
-saveas(figure(69),"./Results/admm/"+"69"+".png")
-
-figure(70)
-legend('\gamma_2 = 0.005', '\gamma_2 = 0.006')
-saveas(figure(70),"./Results/admm/"+"70"+".png")
 end

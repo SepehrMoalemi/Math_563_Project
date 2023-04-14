@@ -36,4 +36,5 @@ function i_def = get_input_param_def()
 
     i_def.sample_rate = 2;
     i_def.verbos = true;
+    i_def.ind_plot = true;
 end

@@ -75,7 +75,10 @@ function x = solver(problem, algorithm, x, kernel, b, i)
     [x, rel_err] = algorithm(objective, prox_f, prox_g, x, b, i);
 
     %% Plot Convergence
-    if i.verbos
+    if i.ind_plot
         salsa.util.plt_rel_err(rel_err, i.sample_rate)
+    end
+    if i.comb_plot
+        salsa.util.plt_rel_err_comb(i.fig, rel_err, i.sample_rate)
     end
 end
