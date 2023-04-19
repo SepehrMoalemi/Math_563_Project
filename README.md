@@ -1,7 +1,5 @@
 # Math_563_Project
 ## Solver Parameter struct i
-Where:
-
 ```i[struct]```: Input Parameter
    - ```i.maxiter [int]```: Iteration Limit
    - ```i.gammal1 [double]```: Amount of De-noising in l1
