@@ -1,51 +1,56 @@
 # Math_563_Project
-    %% Solver Parameter struct i
-        Where:
-            i[struct]: Input Parameter
-                (*) i.maxiter [int]: Iteration Limit
+## Solver Parameter struct i
+Where:
+i[struct]: Input Parameter
+- (*) i.maxiter [int]: Iteration Limit
+- (*) i.gammal1 [double]: Amount of De-noising in l1
+- (*) i.gammal2 [double]: Amount of De-noising in l2
     
-                (*) i.gammal1 [double]: Amount of De-noising in l1
-                (*) i.gammal2 [double]: Amount of De-noising in l2
+- (*) i.rhoprimaldr [double]: Relaxation Parameter rho in douglasrachfordprimal
+- (*) i.tprimaldr   [double]: Stepsize t in douglasrachfordprimal
     
-                (*) i.rhoprimaldr [double]: Relaxation Parameter rho in douglasrachfordprimal
-                (*) i.tprimaldr   [double]: Stepsize t in douglasrachfordprimal
+- (*) i.rhoprimaldualdr [double]: Relaxation Parameter rho in douglasrachfordprimaldual
+- (*) i.tprimaldualdr   [double]: Stepsize t in douglasrachfordprimaldual
     
-                (*) i.rhoprimaldualdr [double]: Relaxation Parameter rho in douglasrachfordprimaldual
-                (*) i.tprimaldualdr   [double]: Stepsize t in douglasrachfordprimaldual
+- (*) i.rhoadmm [double]: Relaxation Parameter pho in ADMM
+- (*) i.tadmm   [double]: Stepsize t in ADMM
     
-                (*) i.rhoadmm [double]: Relaxation Parameter pho in ADMM
-                (*) i.tadmm   [double]: Stepsize t in ADMM
-    
-                (*) i.tcp [double]: stepsize for chambollepock
-                (*) i.scp [double]: stepsize for chambollepock
+- (*) i.tcp [double]: stepsize for chambollepock
+- (*) i.scp [double]: stepsize for chambollepock
 
-                (*) *** For Extra Optional Parameters refer to end of Usage ***
+- (*) *** For Extra Optional Parameters refer to end of Usage ***
 
-            Ex) Specify your own values (empty field will be replaced by default values)
-            % Set common input parameters for all algorithms
-                i.maxiter = 500;
+ ### Ex) Specify your own values (empty field will be replaced by default values)
+'''matlab
+% Set common input parameters for all algorithms
+i.maxiter = 500;
                 i.gammal1 = 0.049;
 
             % Set default input parameters for primal douglas-rachford algorithm
                 i.tprimaldr = 2.0;
                 i.rhoprimaldr = 0.1;
-
-            Ex) Use all default values provided at +salsa/+defaults/get_input_param_def.m
+            '''
+            ### Ex) Use all default values provided at +salsa/+defaults/get_input_param_def.m
                 by initializing with an empty struct
+                '''matlab
                 i = struct();
+                '''
 
-    %% Initial Starting point struct x
+    ## Initial Starting point struct x
         In addition to the starting point values of each algorithm, you can pass the original image, 
         I, using this struct. This enable error calculations using the true data.
-        Ex) Specify your own values (empty field will be replaced by default values)
+        ### Ex) Specify your own values (empty field will be replaced by default values)
+        '''matlab
         % case "douglasrachfordprimal"
                 [m, n] = size(Image);
                 x.z1 = zeros(m, n);
                 x.z2 = zeros(m,n,3);
+        '''
 
-        Ex) Use all default values provided at +salsa/+defaults/get_starting_point_def.m
-            by initializing an empty struct
-            x = struct();
+       ### Ex) Use all default values provided at +salsa/+defaults/get_starting_point_def.m by initializing an empty struct
+  '''matlab
+       x = struct();
+  '''
         
     %% Provide Full File Path to Image : img_path      
         Ex) Give your own file path:
