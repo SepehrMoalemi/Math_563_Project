@@ -21,4 +21,3 @@ function x = l1Prox(x, lambda, b)
     %}
     x = max(x  - lambda, b) + min(x + lambda, b) - b;
 end
-

@@ -40,4 +40,3 @@ function args = get_blurring_def(type)
             args = {15, 0};    
     end
 end
-

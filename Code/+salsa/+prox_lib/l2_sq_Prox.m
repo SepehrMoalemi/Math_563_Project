@@ -18,4 +18,3 @@ function x = l2_sq_Prox(x, lambda, b)
     %}
      x = (x + 2*lambda*b) /(1 + 2*lambda);
 end
-

@@ -38,4 +38,3 @@ function result = test_boxProx(verbos)
     isClose = @(a, b) max(max(abs(a - b))) < tol;
     result = isClose(fmin_argmin,fmin_solver);
 end
-

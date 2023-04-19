@@ -52,4 +52,3 @@ function y = prox_g(problem, b , i, y, lambda)
     % Stack output into tensor
     y = cat(3,prox_g1,prox_g2);
 end
-

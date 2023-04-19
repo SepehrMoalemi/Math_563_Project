@@ -4,4 +4,3 @@ function test_default_input_param_completion()
     i.tcp = 12;
     i = salsa.util.default_input_param_completion(i)
 end
-

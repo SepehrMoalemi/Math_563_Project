@@ -12,4 +12,3 @@ function I = load(file_path, show)
         salsa.img.display(I, 'Raw Image')
     end
 end
-

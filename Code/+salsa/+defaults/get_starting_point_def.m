@@ -18,7 +18,6 @@ function x_init = get_starting_point_def(algorithm, b)
             x_init.z1 = b;
             x_init.z2 = zeros(m,n,3);
 
-
         case "douglasrachfordprimaldual"
             x_init.p0 = b;
             x_init.q0 = zeros(m,n,3);

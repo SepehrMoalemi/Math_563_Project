@@ -1,3 +1,4 @@
+%% Purpose: Sets Missing Starting Points to Default
 function x = default_starting_point_completion(x, algorithm, b)
     arguments
         x struct
@@ -25,7 +26,7 @@ function x = default_starting_point_completion(x, algorithm, b)
         key = x_f{filled_fields(indx)};
         val = x.(key);
         switch key
-            case {'x0', 'u0', 'w0', 'p0', 'z1'}
+            case {'I', 'x0', 'u0', 'w0', 'p0', 'z1'}
                 x_size = size(zeros(m,n));
                 msg = sprintf("x.%s must of be shape [%d, %d]!", key, m, n);
             case 'z0'
@@ -40,9 +41,7 @@ function x = default_starting_point_completion(x, algorithm, b)
                 x_size = size(zeros(m,n,3));
                 msg = sprintf("x.%s must of be shape [%d, %d, %d]!", key, m, n, 3);
         end
-        try 
-            eq(size(val), x_size);
-        catch
+        if ~all(eq(size(val), x_size))
             error(msg);
         end
     end

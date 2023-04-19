@@ -1,5 +1,5 @@
 %% Purpose: Interface for the SALSA package
-function x = solver(problem, algorithm, x, kernel, b, i)
+function x_final = solver(problem, algorithm, x, kernel, b, i)
     arguments
         problem   (1,:) char {mustBeMember(problem, ...
                                             {'l1', ...
@@ -8,12 +8,12 @@ function x = solver(problem, algorithm, x, kernel, b, i)
                                             {'douglasrachfordprimal', ...
                                              'douglasrachfordprimaldual', ...
                                              'admm', ...
-                                             'chambollepock'})}
-
+                                             'chambollepock', ...
+                                             'stewchastic'})}
         x      struct
         kernel double
         b      double
-        i      struct = salsa.defaults.get_input_param_def()
+        i      struct = salsa.defaults.get_input_param_def(problem, algorithm)
     end
     %{ 
         x_final = salsa('problem', 'algorithm', x_initial, kernel, b, i)
@@ -25,33 +25,56 @@ function x = solver(problem, algorithm, x, kernel, b, i)
             OPTIONS: ['douglasrachfordprimal'     |
                       'douglasrachfordprimaldual' |
                       'admm'                      |
-                      'chambollepock']
+                      'chambollepock'             |
+                      'stewchastic']
     
-        %% x_initial[(:,:) double]: Initial Iterate
+        %% x_initial[struct]: Initial Iterate
     
         %% kernel[(:,:) double]: Convolution Kernel (refer to fspecial)
     
         %% b[(:,:) double]: Bluered and Noisy Image
     
         %% i[struct]: Input Parameter
-            OPTIONS: 
+            Optional fields: 
             (*) maxiter [int]: Iteration Limit
+
             (*) gammal1 [double]: Amount of De-noising in l1
             (*) gammal2 [double]: Amount of De-noising in l2
+
             (*) rhoprimaldr [double]: Relaxation Parameter rho in douglasrachfordprimal
-            (*) tprimaldr   [double]: Stepsize t   in douglasrachfordprimal
+            (*) tprimaldr   [double]: Stepsize t in douglasrachfordprimal
+
             (*) rhoprimaldualdr [double]: Relaxation Parameter rho in douglasrachfordprimaldual
-            (*) tprimaldualdr   [double]: Stepsize t   in douglasrachfordprimaldual
+            (*) tprimaldualdr   [double]: Stepsize t in douglasrachfordprimaldual
+
             (*) rhoadmm [double]: Relaxation Parameter pho in ADMM
             (*) tadmm   [double]: Stepsize t in ADMM
+
             (*) tcp [double]: stepsize for chambollepock
             (*) scp [double]: stepsize for chambollepock
+
             (*) sample_rate [int]: Output to screen frequency
             (*) verbos [logical]: Print to terminal or not
+
+            (*) plt_final [logical]: Plot final result
+            (*) plt_progress [logical]: Plots deblurred image while iterating
+            (*) plt_rel_err [logical]: Plot Error vs iterations
+            (*) i.plt_diff [logical] : Plot difference Image between x_original and x_final
+
+            (*) spicy [logical]: Subpackage of easter eggs 
     %}
+    %% Welcome Message
+    if i.spicy
+        salsa.spicy.disp_salsa_bottle();
+    end
+
+    %% Initialize Stewchastic Solver
+    if strcmp(algorithm, 'stewchastic')
+        algorithm = salsa.spicy.stewchastic();
+    end
     
     %% Initialize Empty Input Struct Fields with DEFAULTs
-    i = salsa.util.default_input_param_completion(i);
+    i = salsa.util.default_input_param_completion(i, problem, algorithm);
     i.kernel = kernel;
     i.problem = problem;
 
@@ -64,7 +87,7 @@ function x = solver(problem, algorithm, x, kernel, b, i)
     
     %% Print Algorithm Parameters
     if i.verbos
-        fprintf('\n====================================================\n')
+        fprintf('======================================================\n')
         fprintf('Running %s with %s-norm using:\n', algorithm, problem);
         fprintf('gamma = %G, ', eval(strcat('i.gamma',problem)));
     end
@@ -72,11 +95,26 @@ function x = solver(problem, algorithm, x, kernel, b, i)
     %% Call Algorithms
     param = "(prox_f, prox_g, x, b, i)";
     alg = "salsa.algorithms." + algorithm;
-    algorithm = eval("@" + param + alg + param);
-    [x, rel_err] = algorithm(prox_f, prox_g, x, b, i);
+    solver_call = eval("@" + param + alg + param);
+    [x_final, rel_err] = solver_call(prox_f, prox_g, x, b, i);
 
-    %% Plot Convergence
-    if i.verbos
+    %% Plot Final Resault
+    if i.plt_final
+        fig_name = "Final Deblurred and Denoised Image";
+        title_msg = "Using " + algorithm + " Solver and " + problem + "-norm";
+        salsa.img.display(x_final, fig_name, title_msg);
+    end
+
+    %% Plot Relative Error vs #Iterations
+    if i.plt_rel_err
         salsa.util.plt_rel_err(rel_err, i.sample_rate)
+    end
+
+    %% Plot Difference Image
+    if i.plt_diff && isfield(x, 'I')
+        I_diff = imabsdiff(x.I, x_final);
+        fig_name = "Difference Image of Deblurred and Denoised Image";
+        title_msg = "Difference Image Using " + algorithm + " Solver and " + problem + "-norm";
+        salsa.img.display(I_diff, fig_name, title_msg);
     end
 end

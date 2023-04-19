@@ -1,11 +1,19 @@
 %% Purpose: Sets Missing Input Parameters to Default
-function i = default_input_param_completion(i)
+function i = default_input_param_completion(i, problem, algorithm)
     arguments
         i struct
+        problem   (1,:) char {mustBeMember(problem, ...
+                                            {'l1', ...
+                                             'l2'})}
+        algorithm string {mustBeMember(algorithm, ...
+                                ["douglasrachfordprimal", ...
+                                 "douglasrachfordprimaldual", ...
+                                 "admm", ...
+                                 "chambollepock"])}
     end
 
     %% Get defualt values
-    i_def = salsa.defaults.get_input_param_def();
+    i_def = salsa.defaults.get_input_param_def(problem, algorithm);
 
     %% Set Missing Default Values
     i_f     = fieldnames(i);
@@ -20,12 +28,32 @@ function i = default_input_param_completion(i)
         val = i.(key);
         switch key
             case {'maxiter', 'sample_rate'}
-                assert(isInteger(val) && isPositive(val), "i.maxiter must be a Postive Integer!");
-            case 'verbos'
-                assert(islogical(val), "i.verbos must be True or False Logical Value!");
+                assert(isInteger(val) && isPositive(val), "i." + key + " must be a Postive Integer!");
+            case {'verbos', 'plt_final', 'plt_progress', 'plt_rel_err', 'plt_diff', 'spicy'}
+                assert(islogical(val), "i." + key + " must be True or False Logical Value!");
             otherwise
-                txt = "i." + num2str(key) + " must be a Postive Integer!";
+                txt = "i." + key + " must be a Postive Real Value!";
                 assert(isPositive(val), txt);
+        end
+    end
+
+    % Check if maxiter <  sample_rate
+    if isfield(i, 'maxiter')
+        if isfield(i, 'sample_rate')
+            if i.maxiter < i.sample_rate
+                warning("sample_rate should be smaller than maxiter. Proceesing with sample_rate = 1.");
+                i.sample_rate = 1;
+            end
+        else
+            if i.maxiter < i_def.sample_rate
+                i_def.sample_rate = floor(i.maxiter/100) + 1;
+            end
+        end
+    end
+    if isfield(i, 'sample_rate')
+        if i_def.maxiter < i.sample_rate
+            warning("sample_rate should be smaller than maxiter. Proceesing with sample_rate = 1.");
+            i.sample_rate = 1;
         end
     end
 
@@ -37,9 +65,11 @@ function i = default_input_param_completion(i)
         key = i_def_f{empty_fields(indx)};
         val = i_def.(key);
         i.(key) = val;
+        fprintf("Using DEFAULT i.%s = %G\n", key, val)
     end
 end
 
+%% Helper Functions for Argument type Checks
 function result = isInteger(val)
     result = isreal(val) && isnumeric(val) && isfinite(val) && eq(floor(val), val);
 end

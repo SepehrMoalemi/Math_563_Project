@@ -1,3 +1,4 @@
+%% Purpose: ADMM Algorithm
 function [xk, rel_err] = admm(prox_tf, prox_g, x, b, i)
     arguments
         prox_tf     function_handle
@@ -6,9 +7,6 @@ function [xk, rel_err] = admm(prox_tf, prox_g, x, b, i)
         b           double
         i           struct
     end
-  %{ 
-    TO BE ADJUSTED: Add info on alg
-  %}
 
     %% Initialize
     xk = x.x0; 
@@ -22,7 +20,7 @@ function [xk, rel_err] = admm(prox_tf, prox_g, x, b, i)
 
     %% Print Params in use
     if i.verbos
-        salsa.util.print_param(t, rho);
+        salsa.util.print_param(t, rho, x);
     end
 
     %% Get fft Transformations
@@ -34,10 +32,10 @@ function [xk, rel_err] = admm(prox_tf, prox_g, x, b, i)
     %% Relative Error Calculations
     [obj_fun, f_val_err, f_opt_err] = salsa.util.rel_err_fun(x, b, f_A, i);
     
-    xk_old = xk;
     maxIter = i.maxiter;
 
     sample_rate = i.sample_rate;
+    plt_rate = floor(maxIter)/5;
 
     rel_err.val = zeros(floor(maxIter/sample_rate),1);
     rel_err.opt = zeros(floor(maxIter/sample_rate),1);
@@ -45,7 +43,11 @@ function [xk, rel_err] = admm(prox_tf, prox_g, x, b, i)
     %% ADMM Algorithm
     digits = numel(num2str(maxIter));
     pad = repmat(' ',1, 2*digits+4);
-    fprintf('%sf_objective | Rel_Err_Val | Rel_Err_Opt\n',pad);
+
+    if i.verbos
+        fprintf('%sf_objective | Rel_Err_Val | Rel_Err_Opt\n',pad);
+    end
+    
     indx = 1;
     tic
     for k = 1:maxIter
@@ -57,7 +59,7 @@ function [xk, rel_err] = admm(prox_tf, prox_g, x, b, i)
         wk = wk + t*(xk - uk);
         zk = zk + t*(f_A(xk) - yk);
 
-        if mod(k, sample_rate) == 0 && i.verbos
+        if i.verbos && mod(k, sample_rate) == 0
             rel_err.val(indx) = f_val_err(xk, xk_old);
             rel_err.opt(indx) = f_opt_err(xk, xk_old);
             f_obj = obj_fun(xk);
@@ -67,9 +69,13 @@ function [xk, rel_err] = admm(prox_tf, prox_g, x, b, i)
             fprintf('%10.2E\n',rel_err.opt(indx));
             indx = indx + 1;
         end
+
+        if i.plt_progress && mod(k, plt_rate) == 0
+            salsa.img.display(xk, "Image after " + num2str(k) + " Iterations");
+        end
     end
     xk = f_inv_I_ATA(uk + f_A_T(yk) - (1/t)*(wk + f_A_T(zk)));
     if i.verbos
-        salsa.util.print_completion(rel_err.val, obj_fun(xk), toc);
+        salsa.util.print_completion(rel_err.val, obj_fun(xk), toc, i.spicy);
     end
 end

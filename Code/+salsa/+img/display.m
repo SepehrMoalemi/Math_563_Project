@@ -25,4 +25,3 @@ function display(Img, fig_name, title_msg, font_mult)
     % Change Font Multipliter
     ax.TitleFontSizeMultiplier = font_mult;
 end
-

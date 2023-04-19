@@ -18,7 +18,7 @@ function [xk, rel_err] = douglasrachfordprimaldual(prox_tf, prox_g, x, b, i)
 
     %% Print Params in use
     if i.verbos
-        salsa.util.print_param(t, rho);
+        salsa.util.print_param(t, rho, x);
     end
 
     %% Get fft Transformations    
@@ -33,14 +33,19 @@ function [xk, rel_err] = douglasrachfordprimaldual(prox_tf, prox_g, x, b, i)
     maxIter = i.maxiter;
 
     sample_rate = i.sample_rate;
-
+    plt_rate = floor(maxIter)/5;
+    
     rel_err.val = zeros(floor(maxIter/sample_rate),1);
     rel_err.opt = zeros(floor(maxIter/sample_rate),1);
 
     %% Primal-Dual Douglas-Rachford Splitting Algorithm
     digits = numel(num2str(maxIter));
     pad = repmat(' ',1, 2*digits+4);
-    fprintf('%sf_objective | Rel_Err_Val | Rel_Err_Opt\n',pad);
+
+    if i.verbos
+        fprintf('%sf_objective | Rel_Err_Val | Rel_Err_Opt\n',pad);
+    end
+    
     indx = 1;
     tic
     for k = 1:maxIter
@@ -55,7 +60,7 @@ function [xk, rel_err] = douglasrachfordprimaldual(prox_tf, prox_g, x, b, i)
         pk = pk + rho*(wk -xk);
         qk = qk + rho*(vk - zk);
 
-        if mod(k, sample_rate) == 0 && i.verbos
+        if i.verbos && mod(k, sample_rate) == 0
             rel_err.val(indx) = f_val_err(xk, xk_old);
             rel_err.opt(indx) = f_opt_err(xk, xk_old);
             f_obj = obj_fun(xk);
@@ -65,9 +70,13 @@ function [xk, rel_err] = douglasrachfordprimaldual(prox_tf, prox_g, x, b, i)
             fprintf('%10.2E\n',rel_err.opt(indx));
             indx = indx + 1;
         end
+
+        if i.plt_progress && mod(k, plt_rate) == 0
+            salsa.img.display(xk, "Image after " + num2str(k) + " Iterations");
+        end
     end
     xk = prox_tf(pk);
     if i.verbos
-        salsa.util.print_completion(rel_err.val, obj_fun(xk), toc);
+        salsa.util.print_completion(rel_err.val, obj_fun(xk), toc, i.spicy);
     end
 end
