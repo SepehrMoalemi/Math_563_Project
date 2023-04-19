@@ -33,45 +33,48 @@ i.rhoprimaldr = 0.1;
 
 ### Ex) Use all default values provided at +salsa/+defaults/get_input_param_def.m
 by initializing with an empty struct
-'''
+```matlab
 i = struct();
-'''
+```
+
 
 ## Initial Starting point struct x
 In addition to the starting point values of each algorithm, you can pass the original image, 
 I, using this struct. This enable error calculations using the true data.
  ### Ex) Specify your own values (empty field will be replaced by default values)
-'''
+```matlab
 % case "douglasrachfordprimal"
 [m, n] = size(Image);
 x.z1 = zeros(m, n);
 x.z2 = zeros(m,n,3);
-'''
+```
 
 ### Ex) Use all default values provided at +salsa/+defaults/get_starting_point_def.m by initializing an empty struct
-'''
+```matlab
 x = struct();
-'''
-        
+```
+  
+  
 ## Provide Full File Path to Image : img_path      
 ### Ex) Give your own file path:
-'''
+```matlab
 img_path  = "./somedir/somesubdir/file.png";
-'''
+```
 
 ### Ex) Pick a default image [cameraman, mcgill, manwithhat, salsa_default]:
-'''
+```matlab
 img_path = salsa.defaults.get_img_def("salsa_default");
-'''
+```
+
 
 ## Apply Blur + Noise to Image
 ### Ex) Provide your own blur, noise types using:
-'''
+```matlab
 [I, kernel, b] = salsa.img.corrupt(img_path, ...
                                    blur_type, blur_arg, ...
                                    noise_type, noise_arg, ...
                                    pad_type)
-'''
+```
 Where:
 - blur_type = {'average', 'disk', 'gaussian', log', 'laplacian', 'motion'}
 - blur_arg  = corresponding vals in cell format
@@ -82,13 +85,14 @@ Where:
 - pad_type = {'symmetric', 'replicate', 'circular'}
 
 ### Ex) Use defualt values:
-'''
+```matlab
 [I, kernel, b] = salsa.img.corrupt(img_path);
-'''
+```
 
 Where, 
 - Default Blur  : Motion {len = 15, theta = 0}
 - Default Noise : Salt & Pepper {d = 0.1}
+
 
 ## Extra i struct options: Parameters for ploting and printing: 
 - i.sample_rate [int]: Output to screen frequency
@@ -102,21 +106,22 @@ Where,
 **NOTE: In addition to setting i.plt_rel_err to true, you can pass
         the original image, I, in the initial starting point struct, x, to
         calculate the error of:**
-        '''
+        ```matlab
                                 |I - x_{k}|/|I| 
-        '''
+        ```
         **Otherwise, the error would be:**
-        '''
+        ```matlab
                           |x_{k} - x_{k-1}|/|x_{k}|
-        '''
+        ```
         ### Ex)
-        '''
+        ```matlab
             x.I = I;
             i.plt_rel_err = true;
-        '''
+        ```
         
 **NOTE: For using plt_diff, you need to pass the original image, I,
         in the initial starting point struct, x, similar to above.**
+
 
 ## Extra i struct options: Easter egg options
 - i.spicy [logical]: Activates a Subpackage of easter eggs 
@@ -136,14 +141,16 @@ The spicy subpackage consists of:
    Highly sophisticated Stochastic Solver
 
 ### Ex) 
-'''
+```matlab
 salsa.spicy.spill_the_beans()
-'''
+```
 To use the stewchastic solver, choose it as a solver like
 below:
-'''
+```matlab
                 x_final = salsa.solver("l1","stewchastic", x, kernel, b, i);
-'''
+```
+
+
 ## Call Solver
 - problem : Choice of Norm in the Optimization Function ['l1' | 'l2']                
 - algorithm : Optimization Algorithm ['douglasrachfordprimal'     |
@@ -152,6 +159,6 @@ below:
                                       'chambollepock'             |
                                       'stewchastic']
 ### Ex)
-'''
+```matlab
 x_final = salsa.solver("l1","stewchastic", x, kernel, b, i);
-'''
+```
