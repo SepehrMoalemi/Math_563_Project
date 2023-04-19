@@ -37,9 +37,11 @@ i = struct();
 ```
 
 
+
 ## Initial Starting point struct x
 In addition to the starting point values of each algorithm, you can pass the original image, 
 I, using this struct. This enable error calculations using the true data.
+
 Ex) Specify your own values (empty field will be replaced by default values)
 ```matlab
 % case "douglasrachfordprimal"
@@ -52,6 +54,7 @@ Ex) Use all default values provided at _"+salsa/+defaults/get_starting_point_def
 ```matlab
 x = struct();
 ```
+  
   
   
 ## Provide Full File Path to Image : img_path      
@@ -74,6 +77,7 @@ Ex) Provide your own blur, noise types using:
                                    noise_type, noise_arg, ...
                                    pad_type)
 ```
+
 Where:
 - blur_type = {'average', 'disk', 'gaussian', log', 'laplacian', 'motion'}
 - blur_arg  = corresponding vals in cell format
@@ -105,13 +109,16 @@ Where,
 **NOTE: In addition to setting ```i.plt_rel_err = true```, you can pass
         the original image, ```I```, in the initial starting point struct, ```x```, to
         calculate the error of:**
+        
 ```matlab
 |I - x_{k}|/|I| 
  ```
+ 
 **Otherwise, the error would be:**
 ```matlab
 |x_{k} - x_{k-1}|/|x_{k}|
 ```
+
 Ex) 
 ```matlab
 x.I = I;
@@ -120,6 +127,7 @@ i.plt_rel_err = true;
         
 **NOTE: For using ```plt_diff```, you need to pass the original image, ```I```,
         in the initial starting point struct, ```x```, similar to above.**
+
 
 
 ## Extra i struct options: Easter egg options
@@ -143,11 +151,13 @@ Ex)
 ```matlab
 salsa.spicy.spill_the_beans()
 ```
+
 To use the stewchastic solver, choose it as a solver like
 below:
 ```matlab
 x_final = salsa.solver("l1","stewchastic", x, kernel, b, i);
 ```
+
 
 
 ## Call Solver
