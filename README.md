@@ -6,21 +6,21 @@ Where:
 - ```i.gammal1 [double]```: Amount of De-noising in l1
 - ```i.gammal2 [double]```: Amount of De-noising in l2
     
-- i.rhoprimaldr [double]: Relaxation Parameter rho in douglasrachfordprimal
-- i.tprimaldr   [double]: Stepsize t in douglasrachfordprimal
+- ```i.rhoprimaldr [double]```: Relaxation Parameter rho in douglasrachfordprimal
+- ```i.tprimaldr   [double]```: Stepsize t in douglasrachfordprimal
     
-- i.rhoprimaldualdr [double]: Relaxation Parameter rho in douglasrachfordprimaldual
-- i.tprimaldualdr   [double]: Stepsize t in douglasrachfordprimaldual
+- ```i.rhoprimaldualdr [double]```: Relaxation Parameter rho in douglasrachfordprimaldual
+- ```i.tprimaldualdr   [double]```: Stepsize t in douglasrachfordprimaldual
     
-- i.rhoadmm [double]: Relaxation Parameter pho in ADMM
-- i.tadmm   [double]: Stepsize t in ADMM
+- ```i.rhoadmm [double]```: Relaxation Parameter pho in ADMM
+- ```i.tadmm   [double]```: Stepsize t in ADMM
     
-- i.tcp [double]: stepsize for chambollepock
-- i.scp [double]: stepsize for chambollepock
+- ```i.tcp [double]```: stepsize for chambollepock
+- ```i.scp [double]```: stepsize for chambollepock
 
 - **For Extra Optional Parameters refer to end of Usage**
 
- ### Ex) Specify your own values (empty field will be replaced by default values)
+Ex) Specify your own values (empty field will be replaced by default values)
 ```matlab
 % Set common input parameters for all algorithms
 i.maxiter = 500;
@@ -31,7 +31,7 @@ i.tprimaldr = 2.0;
 i.rhoprimaldr = 0.1;
 ```
 
-### Ex) Use all default values provided at +salsa/+defaults/get_input_param_def.m
+Ex) Use all default values provided at +salsa/+defaults/get_input_param_def.m
 by initializing with an empty struct
 ```matlab
 i = struct();
@@ -41,7 +41,7 @@ i = struct();
 ## Initial Starting point struct x
 In addition to the starting point values of each algorithm, you can pass the original image, 
 I, using this struct. This enable error calculations using the true data.
- ### Ex) Specify your own values (empty field will be replaced by default values)
+Ex) Specify your own values (empty field will be replaced by default values)
 ```matlab
 % case "douglasrachfordprimal"
 [m, n] = size(Image);
@@ -49,26 +49,26 @@ x.z1 = zeros(m, n);
 x.z2 = zeros(m,n,3);
 ```
 
-### Ex) Use all default values provided at +salsa/+defaults/get_starting_point_def.m by initializing an empty struct
+Ex) Use all default values provided at +salsa/+defaults/get_starting_point_def.m by initializing an empty struct
 ```matlab
 x = struct();
 ```
   
   
 ## Provide Full File Path to Image : img_path      
-### Ex) Give your own file path:
+Ex) Give your own file path:
 ```matlab
 img_path  = "./somedir/somesubdir/file.png";
 ```
 
-### Ex) Pick a default image [cameraman, mcgill, manwithhat, salsa_default]:
+Ex) Pick a default image [cameraman, mcgill, manwithhat, salsa_default]:
 ```matlab
 img_path = salsa.defaults.get_img_def("salsa_default");
 ```
 
 
 ## Apply Blur + Noise to Image
-### Ex) Provide your own blur, noise types using:
+Ex) Provide your own blur, noise types using:
 ```matlab
 [I, kernel, b] = salsa.img.corrupt(img_path, ...
                                    blur_type, blur_arg, ...
@@ -84,7 +84,7 @@ Where:
              = or pass {} to use defaults
 - pad_type = {'symmetric', 'replicate', 'circular'}
 
-### Ex) Use defualt values:
+Ex) Use defualt values:
 ```matlab
 [I, kernel, b] = salsa.img.corrupt(img_path);
 ```
@@ -106,18 +106,18 @@ Where,
 **NOTE: In addition to setting i.plt_rel_err to true, you can pass
         the original image, I, in the initial starting point struct, x, to
         calculate the error of:**
-        ```matlab
-                                |I - x_{k}|/|I| 
-        ```
-        **Otherwise, the error would be:**
-        ```matlab
-                          |x_{k} - x_{k-1}|/|x_{k}|
-        ```
-        ### Ex)
-        ```matlab
-            x.I = I;
-            i.plt_rel_err = true;
-        ```
+```matlab
+|I - x_{k}|/|I| 
+ ```
+**Otherwise, the error would be:**
+```matlab
+|x_{k} - x_{k-1}|/|x_{k}|
+```
+Ex) 
+```matlab
+x.I = I;
+i.plt_rel_err = true;
+```
         
 **NOTE: For using plt_diff, you need to pass the original image, I,
         in the initial starting point struct, x, similar to above.**
@@ -140,7 +140,7 @@ The spicy subpackage consists of:
 4) stewchastic.m
    Highly sophisticated Stochastic Solver
 
-### Ex) 
+Ex) 
 ```matlab
 salsa.spicy.spill_the_beans()
 ```
@@ -158,7 +158,7 @@ below:
                                       'admm'                      |
                                       'chambollepock'             |
                                       'stewchastic']
-### Ex)
+Ex)
 ```matlab
 x_final = salsa.solver("l1","stewchastic", x, kernel, b, i);
 ```
