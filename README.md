@@ -21,7 +21,7 @@ Where:
 - **For Extra Optional Parameters refer to end of Usage**
 
  ### Ex) Specify your own values (empty field will be replaced by default values)
-'''
+```matlab
 % Set common input parameters for all algorithms
 i.maxiter = 500;
 i.gammal1 = 0.049;
@@ -29,7 +29,7 @@ i.gammal1 = 0.049;
 % Set default input parameters for primal douglas-rachford algorithm
 i.tprimaldr = 2.0;
 i.rhoprimaldr = 0.1;
-'''
+```
 
 ### Ex) Use all default values provided at +salsa/+defaults/get_input_param_def.m
 by initializing with an empty struct
