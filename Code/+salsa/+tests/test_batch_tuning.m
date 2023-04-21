@@ -45,7 +45,7 @@ function test_batch_tuning(img_path, algorithms, ...
     end
     %% Set i optional params
     i.plt_final    = false;
-    i.plt_progress = true;
+    i.plt_progress = false;
     i.plt_rel_err  = true;
     i.spicy = false;
 
@@ -96,7 +96,7 @@ function test_batch_tuning(img_path, algorithms, ...
     end
 
     params      = {algorithm_names, problems,     gammal1s, gammal2s, arg1s, arg2s};
-    param_names = {algorithm_names, ["l1", "l2"], "\gamma", "\gamma", "t,",  arg2_name};
+    param_names = {algorithm_names, ["l1", "l2"], "\gamma", "\gamma", "t",  arg2_name};
     param_len = length(params);
 
     % Make Legend
@@ -156,8 +156,8 @@ function test_batch_tuning(img_path, algorithms, ...
                 i.gammal2 = gamma;
     
                 % Set Optimization Algorithm Param
-                for maxiter = maxiters
-                    i.maxiter = maxiters_grid;
+                for maxiter = maxiters_grid
+                    i.maxiter = maxiter;
                     for arg1 = arg1s_grid
                         for arg2 = arg2s_grid
                             %% Set Initial Conditions
@@ -194,7 +194,9 @@ function test_batch_tuning(img_path, algorithms, ...
                                         arg2_name + num2str(arg2)+"_";
     
                             % Run Algorithm
+                            tic
                             x_out = salsa.solver(problem, algorithm, x_init, kernel, b, i);
+                            time = toc;
                             
                             dir_res_alg = "./Results/" + algorithm + "/";
                             salsa.util.mkdir_if_no_dir(dir_res_alg)
@@ -209,9 +211,13 @@ function test_batch_tuning(img_path, algorithms, ...
                             imshow(x_out,[])
                             saveas(fig,dir_res_alg+plt_name+".png")
                             
-                            if mode == 1
+                            if mode == 1 && alg_grid_len == 1
                                 close all;
                             end
+
+                            % Print Completion
+                            disp("-------------------------------- Took "+time+" seconds ----------------------------")
+                            disp("------------------------------ Next Configuration ---------------------------")
                         end
                     end
                 end

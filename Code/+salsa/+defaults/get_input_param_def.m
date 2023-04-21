@@ -45,29 +45,44 @@ function i_def = get_input_param_def(problem, algorithm)
     %% Defaut Problem Values
     switch problem
         case 'l1'
-            i_def.gammal1 = 0.03; 
-
+            i_def.gammal1 = 0.025; 
+            rhoprimaldr = 1.5;
+            tprimaldr   = 0.05;
+            rhoprimaldualdr = 0.5;
+            tprimaldualdr   = 4;
+            rhoadmm = 1.0;
+            tadmm   = 1.5;
+            scp = 0.4;
+            tcp = 0.4;
         case 'l2'
-            i_def.gammal2 = 0.04;
+            i_def.gammal2 = 0.035;
+            rhoprimaldr = 1.5;
+            tprimaldr   = 0.09;
+            rhoprimaldualdr = 1.3;
+            tprimaldualdr   = 0.006;
+            rhoadmm = 0.4;
+            tadmm   = 1.0;
+            scp = 0.2;
+            tcp = 0.2;
     end     
 
     %% Default Algorithm Values
     switch algorithm
         case "douglasrachfordprimal"
-            i_def.rhoprimaldr = 1.5;
-            i_def.tprimaldr   = 0.05;
+            i_def.rhoprimaldr = rhoprimaldr;
+            i_def.tprimaldr   = tprimaldr;
 
         case "douglasrachfordprimaldual"
-            i_def.rhoprimaldualdr = 0.3; 
-            i_def.tprimaldualdr   = 5; 
+            i_def.rhoprimaldualdr = rhoprimaldualdr; 
+            i_def.tprimaldualdr   = tprimaldualdr; 
 
         case "admm"
-            i_def.rhoadmm = 0.9;
-            i_def.tadmm   = 0.2;
+            i_def.rhoadmm = rhoadmm;
+            i_def.tadmm   = tadmm;
 
         case "chambollepock"           
-            i_def.scp = 0.2;
-            i_def.tcp = 0.2;  
+            i_def.scp = scp;
+            i_def.tcp = tcp;  
     end
 
     %% Default Printing + Plotting Values

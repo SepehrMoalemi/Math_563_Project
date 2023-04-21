@@ -75,7 +75,7 @@ function x_final = solver(problem, algorithm, x, kernel, b, i)
     
     %% Initialize Empty Input Struct Fields with DEFAULTs
     i = salsa.util.default_input_param_completion(i, problem, algorithm);
-    i.kernel = kernel;
+    i.kernel  = kernel;
     i.problem = problem;
 
     %% Initialize Starting Point Struct Fields with DEFAULTs
@@ -94,7 +94,7 @@ function x_final = solver(problem, algorithm, x, kernel, b, i)
 
     %% Call Algorithms
     param = "(prox_f, prox_g, x, b, i)";
-    alg = "salsa.algorithms." + algorithm;
+    alg   = "salsa.algorithms." + algorithm;
     solver_call = eval("@" + param + alg + param);
     [x_final, rel_err] = solver_call(prox_f, prox_g, x, b, i);
 
