@@ -1,4 +1,4 @@
-# Math_563_Project
+# Math 563 Convex Optimization Project
 ## Solver Parameter struct i
 ```i[struct]```: Input Parameter
    - ```i.maxiter [int]```: Iteration Limit
