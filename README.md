@@ -1,4 +1,4 @@
-# Math 563 Convex Optimization Project
+# SALSA MATLAB Optimization Package
 ## Solver Parameter struct i
 ```i[struct]```: Input Parameter
    - ```i.maxiter [int]```: Iteration Limit
